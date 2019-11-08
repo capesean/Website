@@ -1,0 +1,62 @@
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Select User</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+
+        <form (submit)="runSearch()" novalidate>
+
+            <fieldset>
+
+                <div class="row">
+
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <input type="search" ngbAutofocus name="q" id="q" [(ngModel)]="searchOptions.q" max="100" class="form-control" placeholder="Search users" />
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">Search<i class="fas fa-search ml-1"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+        </form>
+
+        <table class="table table-bordered table-striped table-hover table-sm row-navigation">
+            <thead>
+                <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                    <th scope="col" class="text-center fa-col-width" *ngIf="multiple"><i class="fa fa-fw fa-check-square"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users" (click)="select(user)">
+                <td>{{ user.firstName }}</td>
+                <td>{{ user.lastName }}</td>
+                    <td *ngIf="multiple" class="text-center"><i [ngClass]="{ 'fa-check-square-o': vm.isSelected(user), 'fa-square-o': !vm.isSelected(user) }" class="fa fa-fw"></i></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <pager [headers]="headers" (pageChanged)="runSearch($event)"></pager>
+
+    </div>
+    <div class="modal-footer">
+        <div class="w-100">
+            <button type="button" class="btn btn-info" *ngIf="multiple">{{selectedItems.length}} <span *ngIf="selectedItems.length === 1">{{singular}}</span><span *ngIf="selectedItems.length !== 1">{{plural}}</span> selected</button>
+            <button type="button" class="btn btn-info" (click)="addNew()" target="_blank" *ngIf="showAddNew">Add New</button>
+            <button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
+            <button type="button" class="btn btn-secondary float-right mr-2" (click)="clear()">Clear</button>
+            <button type="button" class="btn btn-secondary float-right mr-2" (click)="selectAll()" *ngIf="multiple">Select All</button>
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,12 @@
+<div class="input-group">
+    <input name="user" id="user" placeholder="{{placeholder}}" (click)="openModal()" type="text"
+                   class="form-control" readonly="readonly" value="{{getLabel()}}" />
+    <input type="hidden" name="id" id="id" [(ngModel)]="id" />
+    <div class="input-group-append">
+        <button type="button" class="btn btn-secondary" (click)="openModal()">
+            <i class="fa fa-search"></i>
+        </button>
+    </div>
+</div>
+
+<user-modal #modal (change)="change($event)"></user-modal>

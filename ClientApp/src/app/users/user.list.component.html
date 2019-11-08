@@ -1,0 +1,45 @@
+<div *ngIf="route.children.length === 0">
+
+    <form (submit)="runSearch(0)" novalidate>
+
+        <div class="row">
+
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="form-group">
+                    <input type="search" name="q" id="q" [(ngModel)]="searchOptions.q" max="100" class="form-control" placeholder="Search users" />
+                </div>
+            </div>
+
+        </div>
+
+        <fieldset>
+
+            <button type="submit" class="btn btn-success">Search<i class="fas fa-search ml-1"></i></button>
+            <a [routerLink]="['./', 'add']" class="btn btn-primary ml-1">Add<i class="fas fa-plus-circle ml-1"></i></a>
+
+        </fieldset>
+
+    </form>
+
+    <hr />
+
+    <table class="table table-bordered table-striped table-hover table-sm row-navigation">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of users" (click)="goToUser(user)">
+                <td>{{ user.firstName }}</td>
+                <td>{{ user.lastName }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <pager [headers]="headers" (pageChanged)="runSearch($event)"></pager>
+
+</div>
+
+<router-outlet></router-outlet>

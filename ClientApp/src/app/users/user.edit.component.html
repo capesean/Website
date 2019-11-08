@@ -1,0 +1,95 @@
+<div *ngIf="route.children.length === 0">
+
+    <form name="form" (submit)="save(form)" novalidate #form="ngForm" [ngClass]="{ 'was-validated': form.submitted }">
+
+        <fieldset class="group">
+
+            <legend>User</legend>
+
+            <div class="form-row">
+
+                <div class="col-sm-6 col-md-4">
+                    <div class="form-group" [ngClass]="{ 'is-invalid': email.invalid }">
+
+                        <label for="email">
+                            Email:
+                        </label>
+
+                        <input type="email" id="email" name="email" [(ngModel)]="user.email" #email="ngModel" maxlength="256" class="form-control" required />
+
+                        <div *ngIf="email.errors?.required" class="invalid-feedback">
+                            Email is required
+                        </div>
+
+                        <div *ngIf="email.errors?.maxlength" class="invalid-feedback">
+                            Email must be at most 50 characters long
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-4">
+                    <div class="form-group" [ngClass]="{ 'is-invalid': firstName.invalid }">
+
+                        <label for="firstName">
+                            First Name:
+                        </label>
+
+                        <input type="text" id="firstName" name="firstName" [(ngModel)]="user.firstName" #firstName="ngModel" class="form-control" required (ngModelChange)="changeBreadcrumb()" maxlength="50" />
+
+                        <div *ngIf="firstName.errors?.required" class="invalid-feedback">
+                           First Name is required
+                        </div>
+
+                        <div *ngIf="firstName.errors?.maxlength" class="invalid-feedback">
+                           First Name must be at most 50 characters long
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-4">
+                    <div class="form-group" [ngClass]="{ 'is-invalid': lastName.invalid }">
+
+                        <label for="lastName">
+                            Last Name:
+                        </label>
+
+                        <input type="text" id="lastName" name="lastName" [(ngModel)]="user.lastName" #lastName="ngModel" class="form-control" required maxlength="50" />
+
+                        <div *ngIf="lastName.errors?.required" class="invalid-feedback">
+                           Last Name is required
+                        </div>
+
+                        <div *ngIf="lastName.errors?.maxlength" class="invalid-feedback">
+                           Last Name must be at most 50 characters long
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-lg-6">
+                    <div class="form-group">
+                        <label>
+                            Roles:
+                        </label>
+                        <select id="roles" name="roles" [multiple]="true" class="form-control" [(ngModel)]="user.roleIds">
+                            <option *ngFor="let role of roles" [value]="role.id">{{role.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+        </fieldset>
+
+        <fieldset>
+            <button type="submit" class="btn btn-success">Save<i class="fas fa-check ml-1"></i></button>
+            <button type="button" *ngIf="!isNew" class="btn btn-outline-danger ml-1" (click)="delete()">Delete<i class="fas fa-times ml-1"></i></button>
+        </fieldset>
+
+    </form>
+
+</div>
+
+<router-outlet></router-outlet>

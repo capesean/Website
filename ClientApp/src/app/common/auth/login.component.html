@@ -1,0 +1,58 @@
+<form name="form" (submit)="submit(form)" class="form-signin mb-5" id="login" novalidate #form="ngForm">
+
+   <div class="text-center mb-4">
+      <img src="images/logo.png" alt="LOGIN" />
+   </div>
+
+   <div class="mb-0 login-top">
+      <input type="email" id="username" name="username" [(ngModel)]="login.username" #username="ngModel"
+             class="form-control" [ngClass]="{ 'is-invalid': form.submitted && username.invalid }"
+             maxlength="100" required autofocus="" placeholder="Email address" />
+   </div>
+
+   <div class="mt-0 mb-4 login-bottom">
+      <input type="password" id="password" name="password" [(ngModel)]="login.password" #password="ngModel"
+             class="form-control" [ngClass]="{ 'is-invalid': form.submitted && password.invalid }"
+             maxlength="250" required placeholder="Password" />
+   </div>
+
+   <div class="alert alert-danger mb-4" *ngIf="form.submitted && form.invalid">
+
+      <div>
+         Please correct the following errors:
+      </div>
+
+      <div *ngIf="username.invalid" class="ml-3 mt-2">
+
+         <div *ngIf="username.errors.required">
+            Email is required.
+         </div>
+
+         <div *ngIf="username.errors.maxlength">
+            Email must be at most 100 characters long.
+         </div>
+
+      </div>
+
+      <div *ngIf="password.invalid">
+
+         <div *ngIf="password.errors.required">
+            Password is required.
+         </div>
+
+         <div *ngIf="password.errors.maxlength">
+            Password must be at most 100 characters long.
+         </div>
+
+      </div>
+
+   </div>
+
+   <button id="loginButton" type="submit" class="btn btn-lg btn-primary btn-block" value="login">Sign in</button>
+
+   <button type="button" (click)="register()" class="btn btn-outline-secondary btn-block" value="register">Register</button>
+
+   <div class="small mt-2 text-right">
+      <a href="/resetpassword">reset password</a>
+   </div>
+</form>
