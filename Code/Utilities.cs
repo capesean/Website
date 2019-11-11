@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using WEB.Models;
 
-namespace WEB
+namespace WEB.Utilities
 {
-    public class Utilities
+    public class General
     {
         public static void SendWelcomeMail(User user, string password)
         {

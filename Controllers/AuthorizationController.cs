@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server;
@@ -15,7 +15,8 @@ using WEB.Models;
 
 namespace AuthorizationServer.Controllers
 {
-    public class AuthorizationController : Controller
+    [ApiController]
+    public class AuthorizationController : ControllerBase
     {
         private readonly IOptions<IdentityOptions> _identityOptions;
         private readonly SignInManager<User> _signInManager;
@@ -32,8 +33,9 @@ namespace AuthorizationServer.Controllers
         }
 
         [HttpPost("~/connect/token"), Produces("application/json")]
-        public async Task<IActionResult> Exchange(OpenIdConnectRequest request)
+        public async Task<IActionResult> Exchange()
         {
+            var request = HttpContext.GetOpenIdConnectRequest();
             if (request.IsPasswordGrantType())
             {
                 var user = await _userManager.FindByNameAsync(request.Username);

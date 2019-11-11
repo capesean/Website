@@ -1,35 +1,21 @@
-using System;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc.Filters;
-using AspNet.Security.OpenIdConnect.Primitives;
 using OpenIddict.Abstractions;
+using System;
 using WEB.Models;
 
 namespace WEB
 {
-    public class HttpGlobalExceptionFilter : IExceptionFilter
-    {
-        // for debugging
-        public void OnException(ExceptionContext context)
-        {
-            var exception = context.Exception;
-        }
-    }
-
     public class Startup
     {
-        private IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
         private IWebHostEnvironment Environment { get; }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
@@ -41,48 +27,32 @@ namespace WEB
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllers();
 
-            // In production, the Angular files will be served from this directory
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                // Configure the context to use Microsoft SQL Server.
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+
+                // Register the entity sets needed by OpenIddict.
+                // Note: use the generic overload if you need
+                // to replace the default OpenIddict entities.
+                options.UseOpenIddict();
+            });
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
 
-
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-
-                options.UseOpenIddict();
-            });
-
+            // Register the Identity services.
             services.AddIdentity<User, AppRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // this should only be required if the Authorize is missing AuthenticationSchemes="Bearer"
-            services.ConfigureApplicationCookie(config =>
-            {
-                config.Events = new CookieAuthenticationEvents
-                {
-                    //OnRedirectToAccessDenied
-                    OnRedirectToLogin = ctx =>
-                    {
-                        if (ctx.Request.Path.StartsWithSegments("/api"))
-                        {
-                            ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        }
-                        else
-                        {
-                            ctx.Response.Redirect("auth/login");
-                            //ctx.Response.Redirect(ctx.RedirectUri);
-                        }
-                        return Task.FromResult(0);
-                    }
-                };
-            });
-
+            // Configure Identity to use the same JWT claims as OpenIddict instead
+            // of the legacy WS-Federation claims it uses by default (ClaimTypes),
+            // which saves you from doing the mapping in your authorization controller.
             services.Configure<IdentityOptions>(options =>
             {
                 options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
@@ -117,20 +87,15 @@ namespace WEB
                 {
                     // Register the Entity Framework stores and models.
                     options.UseEntityFrameworkCore()
-                        .UseDbContext<ApplicationDbContext>();
-
+                           .UseDbContext<ApplicationDbContext>();
                 })
 
                 // Register the OpenIddict server handler.
                 .AddServer(options =>
                 {
-                    // Register the ASP.NET Core MVC binder used by OpenIddict.
-                    // Note: if you don't call this method, you won't be able to
-                    // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
-                    options.UseMvc();
-
                     // Enable the token endpoint.
                     options.EnableTokenEndpoint("/connect/token");
+
                     // todo: this should be called on logout
                     options.EnableLogoutEndpoint("/connect/logout");
 
@@ -144,14 +109,14 @@ namespace WEB
                     options.AcceptAnonymousClients();
 
                     // During development, you can disable the HTTPS requirement.
-                    options.DisableHttpsRequirement();
+                    if (Environment.IsDevelopment())
+                        options.DisableHttpsRequirement();
 
                     options.RegisterScopes(
                         //OpenIdConnectConstants.Scopes.Email,
                         OpenIdConnectConstants.Scopes.Profile,
                         OpenIddictConstants.Scopes.Roles
                     );
-
 
                     // Note: to use JWT access tokens instead of the default
                     // encrypted format, the following lines are required:
@@ -166,58 +131,61 @@ namespace WEB
                 // JWT tokens. For JWT tokens, use the Microsoft JWT bearer handler.
                 .AddValidation();
 
-            //services.AddMvc(o => o.EnableEndpointRouting = false); - needed if .UseMvc
+            // If you prefer using JWT, don't forget to disable the automatic
+            // JWT -> WS-Federation claims mapping used by the JWT middleware:
+            //
+            // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            // JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+            //
+            // services.AddAuthentication()
+            //     .AddJwtBearer(options =>
+            //     {
+            //         options.Authority = "http://localhost:58795/";
+            //         options.Audience = "resource_server";
+            //         options.RequireHttpsMetadata = false;
+            //         options.TokenValidationParameters = new TokenValidationParameters
+            //         {
+            //             NameClaimType = OpenIdConnectConstants.Claims.Subject,
+            //             RoleClaimType = OpenIdConnectConstants.Claims.Role
+            //         };
+            //     });
+
+            // Alternatively, you can also use the introspection middleware.
+            // Using it is recommended if your resource server is in a
+            // different application/separated from the authorization server.
+            //
+            // services.AddAuthentication()
+            //     .AddOAuthIntrospection(options =>
+            //     {
+            //         options.Authority = new Uri("http://localhost:58795/");
+            //         options.Audiences.Add("resource_server");
+            //         options.ClientId = "resource_server";
+            //         options.ClientSecret = "875sqd4s5d748z78z7ds1ff8zz8814ff88ed8ea4z4zzd";
+            //         options.RequireHttpsMetadata = false;
+            //     });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            using (var db = scope.ServiceProvider.GetService<ApplicationDbContext>())
-            using (var um = scope.ServiceProvider.GetService<UserManager<User>>())
-            using (var rm = scope.ServiceProvider.GetService<RoleManager<AppRole>>())
-            {
-                // if not using migrations:
-                db.Database.EnsureDeleted();
-                db.Database.EnsureCreated();
-
-                // if using migrations:
-                //db.Database.EnsureCreated();
-                //db.Database.Migrate();
-
-                SeedAsync(db, um, rm).GetAwaiter().GetResult();
-            }
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            //app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
-            if (!env.IsDevelopment())
-            {
-                app.UseSpaStaticFiles();
-            }
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseAuthorization(); //roles?
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
+
+            app.UseStaticFiles();
 
             app.UseSpa(spa =>
             {
@@ -232,36 +200,6 @@ namespace WEB
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
-        }
-
-        private async Task CreateUserAsync(UserManager<User> um, string email, string password, string firstName, string lastName, AppRole role)
-        {
-            User user = await um.FindByEmailAsync(email);
-            if (user == null)
-            {
-                user = new User
-                {
-                    UserName = email,
-                    Email = email,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    EmailConfirmed = true
-                };
-                var result = await um.CreateAsync(user, password);
-                if (!result.Succeeded) throw new Exception(string.Join(", ", result.Errors));
-            }
-
-            if (!await um.IsInRoleAsync(user, role.Name))
-                await um.AddToRoleAsync(user, role.Name);
-        }
-
-        private async Task SeedAsync(ApplicationDbContext db, UserManager<User> um, RoleManager<AppRole> rm)
-        {
-            var role = new AppRole { Name = "Administrator" };
-            if (await rm.FindByNameAsync(role.Name) == null) await rm.CreateAsync(role);
-            await CreateUserAsync(um, "abc@xyz.com", "ABC@xyz123!", "Abc", "Xyz", role);
-
-            
         }
     }
 }

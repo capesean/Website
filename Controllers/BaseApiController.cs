@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,8 @@ using WEB.Models;
 
 namespace WEB.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class BaseApiController : Controller
+    [ApiController, Authorize(AuthenticationSchemes = OpenIddictValidationDefaults.AuthenticationScheme)]
+    public class BaseApiController : ControllerBase
     {
         internal ApplicationDbContext db;
         internal UserManager<User> userManager;

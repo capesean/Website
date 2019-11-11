@@ -66,7 +66,7 @@ namespace WEB.Controllers
             if (isNew)
             {
                 user = new User();
-                password = Utilities.GenerateRandomPassword(opts.Value);
+                password = Utilities.General.GenerateRandomPassword(opts.Value);
 
                 db.Entry(user).State = EntityState.Added;
             }
@@ -110,7 +110,7 @@ namespace WEB.Controllers
                 }
             }
 
-            Utilities.SendWelcomeMail(user, password);
+            Utilities.General.SendWelcomeMail(user, password);
 
             return await Get(user.Id);
         }
