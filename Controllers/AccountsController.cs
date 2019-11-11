@@ -44,8 +44,8 @@ namespace WEB.Controllers
             body += Environment.NewLine;
             body += settings.RootUrl + "auth/reset?e=" + user.Email + "&t=" + WebUtility.UrlEncode(token) + Environment.NewLine;
 
-            await emailSender.SendEmailAsync("seanmatthewwalsh@gmail.com", "Password Reset", body);
-            //await UserManager.ResetPasswordAsync(model.Id, resetToken, model.NewPassword);
+            await emailSender.SendEmailAsync(user.Email, "Password Reset", body);
+
             return Ok();
         }
 
@@ -61,6 +61,12 @@ namespace WEB.Controllers
             var result = await userManager.ResetPasswordAsync(user, resetDTO.Token, resetDTO.NewPassword);
 
             if (!result.Succeeded) return BadRequest(result.Errors.First().Description);
+
+            var body = user.FirstName + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "Your password has been reset." + Environment.NewLine;
+
+            await emailSender.SendEmailAsync(user.Email, "Password Reset", body);
 
             return Ok();
         }
