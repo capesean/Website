@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using WEB.Models;
 using Microsoft.Extensions.Options;
 
 namespace WEB.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/[Controller]"), Authorize]
     public class UsersController : BaseApiController
     {
         private RoleManager<AppRole> rm;
@@ -17,7 +18,7 @@ namespace WEB.Controllers
         public UsersController(ApplicationDbContext _db, UserManager<User> _um, RoleManager<AppRole> _rm, IOptions<PasswordOptions> _opts) 
             : base(_db, _um) { rm = _rm; opts = _opts; }
 
-        [HttpGet("")]
+        [HttpGet]
         public async Task<IActionResult> Search([FromQuery]PagingOptions pagingOptions, [FromQuery]string q = null, Guid? roleId = null)
         {
             if (pagingOptions == null) pagingOptions = new PagingOptions();

@@ -1,16 +1,16 @@
-<form name="form" (submit)="submit(form)" class="form-signin mb-5" id="login" novalidate #form="ngForm">
+<form name="form" (submit)="submit(form)" class="form-auth mb-5" id="auth" novalidate #form="ngForm">
 
    <div class="text-center mb-4">
       <img src="images/logo.png" alt="LOGIN" />
    </div>
 
-   <div class="mb-0 login-top">
+   <div class="mb-0 auth-top">
       <input type="email" id="username" name="username" [(ngModel)]="login.username" #username="ngModel"
              class="form-control" [ngClass]="{ 'is-invalid': form.submitted && username.invalid }"
              maxlength="100" required autofocus="" placeholder="Email address" />
    </div>
 
-   <div class="mt-0 mb-4 login-bottom">
+   <div class="mt-0 mb-4 auth-bottom">
       <input type="password" id="password" name="password" [(ngModel)]="login.password" #password="ngModel"
              class="form-control" [ngClass]="{ 'is-invalid': form.submitted && password.invalid }"
              maxlength="250" required placeholder="Password" />
@@ -48,11 +48,12 @@
 
    </div>
 
-   <button id="loginButton" type="submit" class="btn btn-lg btn-primary btn-block" value="login">Sign in</button>
+   <button id="authButton" type="submit" class="btn btn-lg btn-primary btn-block" value="login">Sign in</button>
 
    <button type="button" (click)="register()" class="btn btn-outline-secondary btn-block" value="register">Register</button>
 
    <div class="small mt-2 text-right">
-      <a href="/resetpassword">reset password</a>
+      <a [routerLink]="['/auth/resetpassword']">reset password</a>
    </div>
+
 </form>

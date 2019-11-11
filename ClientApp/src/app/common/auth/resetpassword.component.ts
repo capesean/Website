@@ -2,39 +2,25 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
 import { AuthService } from './auth.service';
-import { LoginModel } from './auth.models';
+import { ResetPasswordModel } from './auth.models';
 import { Router } from '@angular/router';
-import { ErrorService } from '../../common/services/error.service';
 
 @Component({
-   selector: 'login',
-   templateUrl: './login.component.html',
+   selector: 'resetpassword',
+   templateUrl: './resetpassword.component.html',
    styleUrls: ['./auth.css'],
 })
-export class LoginComponent implements OnInit {
+export class ResetPasswordComponent implements OnInit {
 
-   public login: LoginModel = { username: undefined, password: undefined };
+   public resetPassword: ResetPasswordModel = { username: undefined };
 
    constructor(
       private toastr: ToastrService,
       private authService: AuthService,
       private router: Router,
-      private errorService: ErrorService
    ) { }
 
    ngOnInit() {
-   }
-
-   register() {
-      this.authService.register(this.login)
-         .subscribe(
-            () => {
-               this.toastr.success("Registration successful!", "Register New Account");
-            },
-            err => {
-               this.errorService.handleError(err, "User", "Register");
-            }
-         );
    }
 
    submit(form: NgForm) {
@@ -48,14 +34,15 @@ export class LoginComponent implements OnInit {
 
       // todo: use ngForm
       // todo: this needs to return a promise, and if success, THEN navigate, else route won't be allowed...
-      this.authService.login(this.login)
+      this.authService.resetPassword(this.resetPassword)
          .subscribe(
             () => {
-               this.router.navigate(['/']);
+               this.toastr.success("A password reset mail has been sent", "Reset Password");
+               this.router.navigate(['/auth/login']);
             },
             err => {
                // todo: reason?
-               this.toastr.error("Login failed", "Login");
+               this.toastr.error("Reset password failed", "Reset Password");
             }
          );
 

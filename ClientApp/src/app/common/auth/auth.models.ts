@@ -3,6 +3,17 @@ export interface LoginModel {
    password: string;
 }
 
+export interface ResetPasswordModel {
+   username: string;
+}
+
+export interface ResetModel {
+   token: string;
+   username: string;
+   newPassword: string;
+   confirmPassword: string;
+}
+
 export interface RegisterModel {
    username: string;
    password: string;

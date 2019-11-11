@@ -2,7 +2,7 @@ import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, Subscription, BehaviorSubject, of, interval, throwError } from 'rxjs';
-import { AuthStateModel, AuthTokenModel, ProfileModel, LoginModel, RefreshGrantModel, RegisterModel } from './auth.models';
+import { AuthStateModel, AuthTokenModel, ProfileModel, LoginModel, RefreshGrantModel, RegisterModel, ResetPasswordModel, ResetModel } from './auth.models';
 import { filter, map, first, flatMap, catchError, tap, mergeMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
 
@@ -46,6 +46,14 @@ export class AuthService {
 
    register(data: RegisterModel): Observable<Response> {
       return this.http.post<Response>(`${environment.baseApiUrl}accounts/register`, data);
+   }
+
+   resetPassword(data: ResetPasswordModel): Observable<void> {
+      return this.http.post<void>(`${environment.baseApiUrl}accounts/resetpassword`, data);
+   }
+
+   reset(data: ResetModel): Observable<void> {
+      return this.http.post<void>(`${environment.baseApiUrl}accounts/reset`, data);
    }
 
    login(user: LoginModel): Observable<any> {

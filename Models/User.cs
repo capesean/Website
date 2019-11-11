@@ -12,6 +12,9 @@ namespace WEB.Models
         [Required(AllowEmptyStrings = true), MaxLength(50)]
         public string LastName { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public string FullName { get; private set; }
+
         public User()
         {
             Id = Guid.NewGuid();

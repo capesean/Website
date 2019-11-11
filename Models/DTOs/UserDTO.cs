@@ -15,6 +15,8 @@ namespace WEB.Models
         [DisplayFormat(ConvertEmptyStringToNull = false), MaxLength(50)]
         public string LastName { get; set; }
 
+        public string FullName { get; set; }
+
         public string Email { get; set; }
 
         public IList<Guid> RoleIds { get; set; }
@@ -36,6 +38,7 @@ namespace WEB.Models
             userDTO.Id = user.Id;
             userDTO.FirstName = user.FirstName;
             userDTO.LastName = user.LastName;
+            userDTO.FullName = user.FullName;
             userDTO.Email = user.Email;
             userDTO.RoleIds = roleIds;
 

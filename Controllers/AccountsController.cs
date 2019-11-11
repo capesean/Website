@@ -7,14 +7,63 @@ using Microsoft.AspNetCore.Authorization;
 using WEB.Models;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Options;
+using System.Net;
 
 namespace WEB.Controllers
 {
-    //todo: protect or remove this contoller?
     [Route("api/[Controller]")]
-    public class AccountsController : BaseApiController
+    public class AccountsController : ControllerBase
     {
-        public AccountsController(ApplicationDbContext _db, UserManager<User> um) : base(_db, um) { }
+        private ApplicationDbContext db;
+        private UserManager<User> userManager;
+        private IEmailSender emailSender;
+        private Settings settings;
+
+        public AccountsController(ApplicationDbContext _db, UserManager<User> _userManager, IEmailSender _emailSender, IOptions<Settings> _settings)
+        {
+            db = _db;
+            userManager = _userManager;
+            emailSender = _emailSender;
+            settings = _settings.Value;
+        }
+
+        [HttpPost("[Action]"), AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordDTO resetPasswordDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var user = await db.Users.FirstOrDefaultAsync(o => o.UserName == resetPasswordDTO.UserName);
+            if (user == null) return NotFound();
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            var body = user.FirstName + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "A password reset has been requested. Please use the link below to reset your password." + Environment.NewLine;
+            body += Environment.NewLine;
+            body += settings.RootUrl + "auth/reset?e=" + user.Email + "&t=" + WebUtility.UrlEncode(token) + Environment.NewLine;
+
+            await emailSender.SendEmailAsync("seanmatthewwalsh@gmail.com", "Password Reset", body);
+            //await UserManager.ResetPasswordAsync(model.Id, resetToken, model.NewPassword);
+            return Ok();
+        }
+
+        [HttpPost("[Action]"), AllowAnonymous]
+        public async Task<IActionResult> Reset([FromBody]ResetDTO resetDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (resetDTO.NewPassword != resetDTO.ConfirmPassword) return BadRequest("Passwords do not match");
+
+            var user = await db.Users.FirstOrDefaultAsync(o => o.UserName == resetDTO.UserName);
+            if (user == null) return NotFound(); // todo: should be BadRequest("Invalid email")?
+
+            var result = await userManager.ResetPasswordAsync(user, resetDTO.Token, resetDTO.NewPassword);
+
+            if (!result.Succeeded) return BadRequest(result.Errors.First().Description);
+
+            return Ok();
+        }
 
         [HttpPost("[Action]"), AllowAnonymous]
         public async Task<IActionResult> Register([FromBody]RegisterDTO registerDTO)
@@ -45,6 +94,24 @@ namespace WEB.Controllers
             public string UserName { get; set; }
             [Required]
             public string Password { get; set; }
+        }
+
+        public class ResetPasswordDTO
+        {
+            [Required]
+            public string UserName { get; set; }
+        }
+
+        public class ResetDTO
+        {
+            [Required]
+            public string UserName { get; set; }
+            [Required]
+            public string NewPassword { get; set; }
+            [Required]
+            public string ConfirmPassword { get; set; }
+            [Required]
+            public string Token { get; set; }
         }
     }
 }

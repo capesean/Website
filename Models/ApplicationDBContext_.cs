@@ -8,5 +8,10 @@ namespace WEB.Models
         public void ConfigureModelBuilder(ModelBuilder modelBuilder)
         {
         }
+
+        public void AddComputedColumns()
+        {
+            CreateComputedColumn("AspNetUsers", "FullName", "FirstName + ' ' + LastName");
+        }
     }
 }

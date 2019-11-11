@@ -5,12 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { AuthComponent } from './auth.component';
 import { AuthRoutes } from './auth.routes';
 import { LoginComponent } from './login.component';
+import { ResetPasswordComponent } from './resetpassword.component';
+import { ResetComponent } from './reset.component';
 
 @NgModule({
    imports: [
       CommonModule,
       RouterModule.forChild(AuthRoutes),
       FormsModule],
-   declarations: [LoginComponent, AuthComponent]
+   declarations: [AuthComponent, LoginComponent, ResetPasswordComponent, ResetComponent]
 })
 export class AuthModule { }

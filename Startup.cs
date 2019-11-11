@@ -29,6 +29,9 @@ namespace WEB
         {
             services.AddControllers();
 
+            services.Configure<Settings>(Configuration.GetSection("Settings"));
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 // Configure the context to use Microsoft SQL Server.
@@ -163,11 +166,31 @@ namespace WEB
             //         options.ClientSecret = "875sqd4s5d748z78z7ds1ff8zz8814ff88ed8ea4z4zzd";
             //         options.RequireHttpsMetadata = false;
             //     });
+
+            services.AddSingleton<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            using (var db = scope.ServiceProvider.GetService<ApplicationDbContext>())
+            using (var um = scope.ServiceProvider.GetService<UserManager<User>>())
+            using (var rm = scope.ServiceProvider.GetService<RoleManager<AppRole>>())
+            {
+                // if not using migrations:
+                //db.Database.EnsureDeleted();
+                //db.Database.EnsureCreated();
+
+                // if using migrations:
+                //db.Database.EnsureCreated();
+                //db.Database.Migrate();
+
+                db.AddComputedColumns();
+
+                ApplicationDbContext.SeedAsync(db, um, rm).GetAwaiter().GetResult();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -201,5 +224,7 @@ namespace WEB
                 }
             });
         }
+
+
     }
 }
