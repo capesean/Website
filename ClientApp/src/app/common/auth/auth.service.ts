@@ -2,7 +2,7 @@ import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, Subscription, BehaviorSubject, of, interval, throwError } from 'rxjs';
-import { AuthStateModel, AuthTokenModel, ProfileModel, LoginModel, RefreshGrantModel, RegisterModel, ResetPasswordModel, ResetModel } from './auth.models';
+import { AuthStateModel, AuthTokenModel, ProfileModel, LoginModel, RefreshGrantModel, RegisterModel, ResetPasswordModel, ResetModel, ChangePasswordModel } from './auth.models';
 import { filter, map, first, flatMap, catchError, tap, mergeMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
 
@@ -68,6 +68,10 @@ export class AuthService {
          this.refreshSubscription$.unsubscribe();
       }
       this.removeToken();
+   }
+
+   changePassword(changePassword: ChangePasswordModel): Observable<void> {
+      return this.http.post<void>(`${environment.baseApiUrl}accounts/changepassword`, changePassword);
    }
 
    isInRole(profile: ProfileModel, role: string): boolean {

@@ -11,8 +11,8 @@ export const CustomRoutes: Route[] = [
    //   component: XYZComponent,
    //   data: { breadcrumb: 'XYZ' }
    //},
-   {
-      path: "**",
-      component: NotFoundComponent
-   }
+   //{
+   //   path: "**",
+   //   component: NotFoundComponent
+   //}
 ];

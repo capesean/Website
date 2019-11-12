@@ -39,12 +39,12 @@ namespace WEB.Models
         internal async Task InitAsync(UserManager<User> um, RoleManager<AppRole> rm)
         {
             // if not using migrations:
-            //db.Database.EnsureDeleted();
-            //db.Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
 
             // if using migrations:
-            //db.Database.EnsureCreated();
-            //db.Database.Migrate();
+            //Database.EnsureCreated();
+            //Database.Migrate();
 
             AddComputedColumns();
 

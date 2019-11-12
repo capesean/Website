@@ -19,9 +19,10 @@ import { AccessGuard } from './common/auth/accessguard';
 import { NavMenuComponent } from './common/nav-menu/nav-menu.component';
 import { AuthoriseRequestInterceptor, UnauthorisedResponseInterceptor } from './common/auth/auth.interceptors';
 import { GeneratedModule } from './generated.module';
+import { ChangePasswordComponent } from './users/changepassword.component';
 
 @NgModule({
-   declarations: [AppComponent, NavMenuComponent, MainComponent, HomeComponent, NotFoundComponent],
+   declarations: [AppComponent, NavMenuComponent, MainComponent, HomeComponent, ChangePasswordComponent, NotFoundComponent],
    imports: [
       BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
       HttpClientModule,

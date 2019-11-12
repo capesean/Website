@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
 using System.Net;
+using OpenIddict.Validation;
 
 namespace WEB.Controllers
 {
@@ -26,6 +27,29 @@ namespace WEB.Controllers
             userManager = _userManager;
             emailSender = _emailSender;
             settings = _settings.Value;
+        }
+
+        [HttpPost("[Action]"), Authorize(AuthenticationSchemes = OpenIddictValidationDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordDTO changePasswordDTO)
+        {
+            // todo: check if enabled? user.enabled - also in login, reset, BaseApiController, etc.
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (changePasswordDTO.NewPassword != changePasswordDTO.ConfirmPassword) return BadRequest("Passwords do not match");
+
+            var user = await db.Users.FirstOrDefaultAsync(o => o.UserName == User.Identity.Name);
+            if (user == null) return NotFound();
+
+            var result = await userManager.ChangePasswordAsync(user, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
+
+            if (!result.Succeeded) return BadRequest(result.Errors.First().Description);
+
+            var body = user.FirstName + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "Your password has been changed." + Environment.NewLine;
+
+            await emailSender.SendEmailAsync(user.Email, "Password Changed", body);
+
+            return Ok();
         }
 
         [HttpPost("[Action]"), AllowAnonymous]
@@ -118,6 +142,16 @@ namespace WEB.Controllers
             public string ConfirmPassword { get; set; }
             [Required]
             public string Token { get; set; }
+        }
+
+        public class ChangePasswordDTO
+        {
+            [Required]
+            public string CurrentPassword { get; set; }
+            [Required]
+            public string NewPassword { get; set; }
+            [Required]
+            public string ConfirmPassword { get; set; }
         }
     }
 }
