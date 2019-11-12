@@ -70,6 +70,12 @@ export class AuthService {
       this.removeToken();
    }
 
+   isInRole(profile: ProfileModel, role: string): boolean {
+      if (!profile) return false;
+      if (typeof (profile.role) === "string") return role === profile.role;
+      return profile.role.indexOf(role) !== -1;
+   }
+
    refreshTokens(): Observable<AuthTokenModel> {
       return this.state
          .pipe(first())

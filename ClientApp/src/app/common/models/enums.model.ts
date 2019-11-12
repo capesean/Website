@@ -1,7 +1,9 @@
-export class EnumType {
-    value: number;
-    label: string;
+export class Enum {
+   value: number;
+   name: string;
+   label: string;
 }
 
-export class EnumHelper {
+export class Enums {
+
 }

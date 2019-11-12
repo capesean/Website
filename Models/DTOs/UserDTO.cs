@@ -30,8 +30,9 @@ namespace WEB.Models
             if (user == null) return null;
 
             var roleIds = new List<Guid>();
-            foreach (var role in user.Roles)
-                roleIds.Add(role.RoleId);
+            if (user.Roles != null)
+                foreach (var role in user.Roles)
+                    roleIds.Add(role.RoleId);
 
             var userDTO = new UserDTO();
 

@@ -5,7 +5,6 @@ import { MainComponent } from './main.component';
 import { CustomRoutes } from './custom.routes';
 import { UserListComponent } from './users/user.list.component';
 import { UserEditComponent } from './users/user.edit.component';
-import { NotFoundComponent } from './common/notfound.component';
 
 export const GeneratedRoutes: Route[] = [
    {
