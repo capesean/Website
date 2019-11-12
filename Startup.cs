@@ -178,17 +178,7 @@ namespace WEB
             using (var um = scope.ServiceProvider.GetService<UserManager<User>>())
             using (var rm = scope.ServiceProvider.GetService<RoleManager<AppRole>>())
             {
-                // if not using migrations:
-                //db.Database.EnsureDeleted();
-                //db.Database.EnsureCreated();
-
-                // if using migrations:
-                //db.Database.EnsureCreated();
-                //db.Database.Migrate();
-
-                db.AddComputedColumns();
-
-                ApplicationDbContext.SeedAsync(db, um, rm).GetAwaiter().GetResult();
+                db.InitAsync(um, rm).Wait();
             }
 
             if (env.IsDevelopment())
