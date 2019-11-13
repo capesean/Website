@@ -3,6 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { ProfileModel } from '../auth/auth.models';
+import { Roles } from '../models/roles.model';
 
 @Component({
    selector: 'app-nav-menu',
@@ -24,8 +25,7 @@ export class NavMenuComponent implements OnInit {
    ngOnInit(): void {
       this.authService.profile$.subscribe(profile => {
          this.profile = profile;
-         // todo: make this an enum?
-         this.isAdmin = this.profile && this.profile.role === "Administrator";
+         this.isAdmin = this.authService.isInRole(profile, Roles.Administrator);
       });
    }
 

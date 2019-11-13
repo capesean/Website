@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -48,17 +49,18 @@ namespace WEB.Models
 
             //AddComputedColumns();
 
-            //await SeedAsync(um, rm);
+            await SeedAsync(um, rm);
         }
 
         internal async Task SeedAsync(UserManager<User> um, RoleManager<AppRole> rm)
         {
-            var role = new AppRole { Name = "Administrator" };
-            if (await rm.FindByNameAsync(role.Name) == null) await rm.CreateAsync(role);
-            await CreateUserAsync(um, "abc@xyz.com", "ABC@xyz!", "Abc", "Xyz", role);
+            var roles = Enum.GetNames(typeof(Roles));
+            foreach (var role in roles)
+                if (!await rm.RoleExistsAsync(role)) await rm.CreateAsync(new AppRole { Name = role });
+            await CreateUserAsync(um, "abc@xyz.com", "ABC@xyz!", "Abc", "Xyz", roles);
         }
 
-        private async Task CreateUserAsync(UserManager<User> um, string email, string password, string firstName, string lastName, AppRole role)
+        private async Task CreateUserAsync(UserManager<User> um, string email, string password, string firstName, string lastName, string[] roles)
         {
             User user = await um.FindByEmailAsync(email);
             if (user == null)
@@ -75,8 +77,9 @@ namespace WEB.Models
                 if (!result.Succeeded) throw new System.Exception(string.Join(", ", result.Errors));
             }
 
-            if (!await um.IsInRoleAsync(user, role.Name))
-                await um.AddToRoleAsync(user, role.Name);
+            foreach (var role in roles)
+                if (!await um.IsInRoleAsync(user, role))
+                    await um.AddToRoleAsync(user, role);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
