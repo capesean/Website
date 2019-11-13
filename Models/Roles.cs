@@ -1,7 +1,7 @@
-﻿namespace WEB.Models
+namespace WEB.Models
 {
     public enum Roles
     {
-        Administrator, Test
+        Administrator
     }
 }
