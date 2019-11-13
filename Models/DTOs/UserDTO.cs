@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WEB.Models
 {
@@ -19,20 +20,19 @@ namespace WEB.Models
 
         public string Email { get; set; }
 
-        public IList<Guid> RoleIds { get; set; }
+        public IList<string> Roles { get; set; }
 
     }
 
     public static partial class ModelFactory
     {
-        public static UserDTO Create(User user)
+        public static UserDTO Create(User user, List<AppRole> appRoles = null)
         {
             if (user == null) return null;
 
-            var roleIds = new List<Guid>();
-            if (user.Roles != null)
-                foreach (var role in user.Roles)
-                    roleIds.Add(role.RoleId);
+            var roles = new List<string>();
+            if (user.Roles != null && appRoles != null)
+                roles = appRoles.Where(o => user.Roles.Any(r => r.RoleId == o.Id)).Select(o => o.Name).ToList();
 
             var userDTO = new UserDTO();
 
@@ -41,7 +41,7 @@ namespace WEB.Models
             userDTO.LastName = user.LastName;
             userDTO.FullName = user.FullName;
             userDTO.Email = user.Email;
-            userDTO.RoleIds = roleIds;
+            userDTO.Roles = roles;
 
             return userDTO;
         }

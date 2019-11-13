@@ -38,6 +38,11 @@ body {
    }
 }
 
+.form-check {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 .ui-breadcrumb {
    border: none !important;
    background-color: white !important;
@@ -50,9 +55,13 @@ body {
       margin: 5px !important;
    }
 
-.app-select input.form-control {
-    background-color: white !important;
-    cursor: pointer;
+.app-select .input-group:not(.disabled) input.form-control {
+  background-color: white !important;
+  cursor: pointer;
+}
+
+.app-select .input-group.disabled .btn {
+  cursor: default;
 }
 
 .was-validated .app-select.ng-invalid input.form-control {

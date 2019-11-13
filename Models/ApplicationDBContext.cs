@@ -39,8 +39,8 @@ namespace WEB.Models
         internal async Task InitAsync(UserManager<User> um, RoleManager<AppRole> rm)
         {
             // if not using migrations:
-            //Database.EnsureDeleted();
-            //Database.EnsureCreated();
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
 
             // if using migrations:
             //Database.EnsureCreated();

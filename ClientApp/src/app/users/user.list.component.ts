@@ -12,13 +12,13 @@ import { UserService } from '../common/services/user.service';
 })
 export class UserListComponent implements OnInit {
 
-   private users: User[];
-   public searchOptions = new UserSearchOptions();
-   public headers = new PagingOptions();
-   public routerSubscription: Subscription;
+   private users: User[] = [];
+   private searchOptions = new UserSearchOptions();
+   private headers = new PagingOptions();
+   private routerSubscription: Subscription;
 
    constructor(
-      public route: ActivatedRoute,
+      private route: ActivatedRoute,
       private router: Router,
       private errorService: ErrorService,
       private userService: UserService

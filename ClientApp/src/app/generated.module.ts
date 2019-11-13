@@ -10,9 +10,10 @@ import { UserSelectComponent } from './users/user.select.component';
 import { UserModalComponent } from './users/user.modal.component';
 import { GeneratedRoutes } from './generated.routes';
 import { CustomComponents } from './custom.components';
+import { MomentPipe } from './common/pipes/momentPipe';
 
 @NgModule({
-   declarations: [PagerComponent, UserListComponent, UserEditComponent, UserSelectComponent, UserModalComponent].concat(CustomComponents),
+   declarations: [PagerComponent, UserListComponent, UserEditComponent, UserSelectComponent, UserModalComponent, MomentPipe].concat(CustomComponents),
    imports: [
       CommonModule,
       FormsModule,

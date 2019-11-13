@@ -20,7 +20,7 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
 
    multiple: boolean = false;
    showAddNew: boolean = false;
-   disabled: boolean = true;
+   disabled: boolean = false;
    placeholder = "Select a user";
 
    @ViewChild('modal', { static: false }) modal: UserModalComponent;
@@ -49,10 +49,11 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
    }
 
    setDisabledState?(isDisabled: boolean): void {
-      throw new Error("setDisabledState not implemented.");
+      this.disabled = isDisabled;
    }
 
    change(user: User) {
+		if (this.disabled) return;
       this.user = user;
       this.writeValue(user ? user.id : null);
    }
@@ -62,6 +63,7 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
    }
 
    openModal() {
+		if (this.disabled) return;
       this.modal.open();
    }
 }

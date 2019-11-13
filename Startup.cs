@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenIddict.Abstractions;
 using System;
+using System.Threading.Tasks;
 using WEB.Models;
 
 namespace WEB
@@ -166,6 +167,16 @@ namespace WEB
             //         options.ClientSecret = "875sqd4s5d748z78z7ds1ff8zz8814ff88ed8ea4z4zzd";
             //         options.RequireHttpsMetadata = false;
             //     });
+
+            services.ConfigureApplicationCookie(config =>
+            {
+                config.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode = 403;
+                    return Task.CompletedTask;
+                };
+
+            });
 
             services.AddSingleton<IEmailSender, EmailSender>();
         }

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace WEB.Controllers
 {
-    [Route("api/[Controller]"), Authorize]
+    [Route("api/[Controller]")]
     public class UsersController : BaseApiController
     {
         private RoleManager<AppRole> rm;
@@ -34,7 +34,9 @@ namespace WEB.Controllers
 
             results = results.OrderBy(o => o.Id);
 
-            return Ok((await GetPaginatedResponse(results, pagingOptions)).Select(o => ModelFactory.Create(o)));
+            var roles = await db.Roles.ToListAsync();
+
+            return Ok((await GetPaginatedResponse(results, pagingOptions)).Select(o => ModelFactory.Create(o, roles)));
         }
 
         [HttpGet("{id:Guid}")]
@@ -46,6 +48,8 @@ namespace WEB.Controllers
 
             if (user == null)
                 return NotFound();
+
+            var roles = await db.Roles.ToListAsync();
 
             return Ok(ModelFactory.Create(user));
         }
@@ -101,17 +105,15 @@ namespace WEB.Controllers
                 }
             }
 
-            if (userDTO.RoleIds != null)
+            if (userDTO.Roles != null)
             {
-                foreach (var roleId in userDTO.RoleIds)
+                foreach (var roleName in userDTO.Roles)
                 {
-                    var appRole = appRoles.SingleOrDefault(r => r.Id == roleId);
-                    if (appRole != null)
-                        await userManager.AddToRoleAsync(user, appRole.Name);
+                    await userManager.AddToRoleAsync(user, roleName);
                 }
             }
 
-            Utilities.General.SendWelcomeMail(user, password);
+            if (isNew) Utilities.General.SendWelcomeMail(user, password);
 
             return await Get(user.Id);
         }

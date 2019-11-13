@@ -30,7 +30,7 @@ export class ErrorService {
          }
          else if (httpError.status === 403)
             // todo: reroute to home page?
-            message = `You do not have permission to access that resource`;
+            message = `You do not have permission to complete that action`;
          else if (httpError.status === 404)
             message = `The ${resourceType} could not be found`;
          else {

@@ -9,6 +9,7 @@ import { ErrorService } from '../common/services/error.service';
 import { PagingOptions } from '../common/models/http.model';
 import { User } from '../common/models/user.model';
 import { UserService } from '../common/services/user.service';
+import { Roles } from '../common/models/roles.model';
 
 @Component({
    selector: 'user-edit',
@@ -16,14 +17,14 @@ import { UserService } from '../common/services/user.service';
 })
 export class UserEditComponent implements OnInit, OnDestroy {
 
-   public user: User = new User();
-   public isNew: boolean = true;
-   public routerSubscription: Subscription;
-   public roles = [{ name: 'Administrator', id: '470356a5-f7db-4e2e-9c99-62c2800dc2f4' }];
+   private user: User = new User();
+   private isNew: boolean = true;
+   private routerSubscription: Subscription;
+   private roles = Roles.List;
 
    constructor(
       private router: Router,
-      public route: ActivatedRoute,
+      private route: ActivatedRoute,
       private toastr: ToastrService,
       private breadcrumbService: BreadcrumbService,
       private errorService: ErrorService,

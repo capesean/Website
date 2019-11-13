@@ -36,4 +36,5 @@ export class UserService extends SearchQuery {
    delete(id: string): Observable<void> {
       return this.http.delete<void>(`${environment.baseApiUrl}users/${id}`);
    }
+
 }

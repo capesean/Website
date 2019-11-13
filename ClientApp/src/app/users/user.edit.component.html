@@ -68,14 +68,17 @@
                     </div>
                 </div>
 
-                <div class="col-sm-12 col-lg-6">
+                <div class="col-sm-6 col-md-4">
                     <div class="form-group">
+
                         <label>
                             Roles:
                         </label>
-                        <select id="roles" name="roles" [multiple]="true" class="form-control" [(ngModel)]="user.roleIds">
-                            <option *ngFor="let role of roles" [value]="role.id">{{role.name}}</option>
+
+                        <select id="roles" name="roles" [multiple]="true" class="form-control" [(ngModel)]="user.roles">
+                            <option *ngFor="let role of roles" [ngValue]="role.name">{{role.label}}</option>
                         </select>
+
                     </div>
                 </div>
 

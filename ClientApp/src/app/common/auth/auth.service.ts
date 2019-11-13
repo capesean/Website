@@ -5,6 +5,7 @@ import { Observable, Subscription, BehaviorSubject, of, interval, throwError } f
 import { AuthStateModel, AuthTokenModel, ProfileModel, LoginModel, RefreshGrantModel, RegisterModel, ResetPasswordModel, ResetModel, ChangePasswordModel } from './auth.models';
 import { filter, map, first, flatMap, catchError, tap, mergeMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
+import { Role } from '../models/roles.model';
 
 const jwt = new JwtHelperService();
 
@@ -74,8 +75,9 @@ export class AuthService {
       return this.http.post<void>(`${environment.baseApiUrl}accounts/changepassword`, changePassword);
    }
 
-   isInRole(profile: ProfileModel, role: string): boolean {
-      if (!profile) return false;
+   isInRole(profile: ProfileModel, role: string | Role): boolean {
+      if (!profile || !profile.role) return false;
+      if (typeof (role) === "object") role = role.name;
       if (typeof (profile.role) === "string") return role === profile.role;
       return profile.role.indexOf(role) !== -1;
    }
@@ -151,6 +153,8 @@ export class AuthService {
             return this.refreshTokens();
          }))
          .pipe(catchError(error => {
+            debugger;
+            alert("refirect to login?");
             this.logout();
             this.updateState({ authReady: true });
             return throwError(error);
