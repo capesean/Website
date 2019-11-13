@@ -38,17 +38,17 @@ namespace WEB.Models
 
         internal async Task InitAsync(UserManager<User> um, RoleManager<AppRole> rm)
         {
-            // if not using migrations:
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
-
-            // if using migrations:
+            //// if not using migrations:
+            //Database.EnsureDeleted();
             //Database.EnsureCreated();
-            //Database.Migrate();
 
-            AddComputedColumns();
+            //// if using migrations:
+            ////Database.EnsureCreated();
+            ////Database.Migrate();
 
-            await SeedAsync(um, rm);
+            //AddComputedColumns();
+
+            //await SeedAsync(um, rm);
         }
 
         internal async Task SeedAsync(UserManager<User> um, RoleManager<AppRole> rm)

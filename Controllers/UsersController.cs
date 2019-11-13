@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace WEB.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/[Controller]"), Authorize]
     public class UsersController : BaseApiController
     {
         private RoleManager<AppRole> rm;
@@ -51,7 +51,7 @@ namespace WEB.Controllers
 
             var roles = await db.Roles.ToListAsync();
 
-            return Ok(ModelFactory.Create(user));
+            return Ok(ModelFactory.Create(user, roles));
         }
 
         [HttpPost("{id:Guid}"), AuthorizeRoles(Roles.Administrator)]
