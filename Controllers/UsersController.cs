@@ -15,8 +15,9 @@ namespace WEB.Controllers
     {
         private RoleManager<AppRole> rm;
         private IOptions<PasswordOptions> opts;
-        public UsersController(ApplicationDbContext _db, UserManager<User> _um, RoleManager<AppRole> _rm, IOptions<PasswordOptions> _opts) 
-            : base(_db, _um) { rm = _rm; opts = _opts; }
+
+        public UsersController(ApplicationDbContext _db, UserManager<User> _um, Settings _settings, RoleManager<AppRole> _rm, IOptions<PasswordOptions> _opts) 
+            : base(_db, _um, _settings) { rm = _rm; opts = _opts; }
 
         [HttpGet]
         public async Task<IActionResult> Search([FromQuery]PagingOptions pagingOptions, [FromQuery]string q = null, Guid? roleId = null)
@@ -113,7 +114,7 @@ namespace WEB.Controllers
                 }
             }
 
-            if (isNew) Utilities.General.SendWelcomeMail(user, password);
+            if (isNew) await Utilities.General.SendWelcomeMailAsync(user, password, Settings);
 
             return await Get(user.Id);
         }
@@ -125,6 +126,9 @@ namespace WEB.Controllers
 
             if (user == null)
                 return NotFound();
+
+            foreach (var role in await userManager.GetRolesAsync(user))
+                await userManager.RemoveFromRoleAsync(user, role);
 
             await userManager.DeleteAsync(user);
 

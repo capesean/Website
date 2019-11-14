@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using MimeKit;
+﻿using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,24 +14,20 @@ namespace WEB
     public class EmailSender : IEmailSender
     {
         private readonly Settings _settings;
-        private readonly EmailSettings _emailSettings;
-        private readonly IWebHostEnvironment _env;
 
-        public EmailSender(IOptions<Settings> settings, IOptions<EmailSettings> emailSettings, IWebHostEnvironment env)
+        public EmailSender(Settings settings)
         {
-            _settings = settings.Value;
-            _emailSettings = emailSettings.Value;
-            _env = env;
+            _settings = settings;
         }
 
         public async Task SendEmailAsync(string email, string subject, string bodyText, string bodyHtml = null)
         {
             var mimeMessage = new MimeMessage();
             mimeMessage.To.Add(new MailboxAddress(email));
-            mimeMessage.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.Sender));
+            mimeMessage.From.Add(new MailboxAddress(_settings.EmailSettings.SenderName, _settings.EmailSettings.Sender));
             mimeMessage.Subject = subject;
 
-            var html = System.IO.File.ReadAllText(System.IO.Path.Join(_env.ContentRootPath , "templates/email.html"));
+            var html = System.IO.File.ReadAllText(System.IO.Path.Join(_settings.RootPath, "templates/email.html"));
             html = html.Replace("{rootUrl}", _settings.RootUrl);
             html = html.Replace("{title}", subject);
             if (bodyHtml == null) bodyHtml = bodyText;
@@ -50,21 +43,21 @@ namespace WEB
 
             mimeMessage.Body = builder.ToMessageBody();
 
-            if (_env.IsDevelopment() || !string.IsNullOrWhiteSpace(_emailSettings.SubstitutionEmailAddress))
+            if (_settings.IsDevelopment || !string.IsNullOrWhiteSpace(_settings.EmailSettings.SubstitutionEmailAddress))
             {
                 // substitute all TO emails
                 var replacements = new List<MailboxAddress>();
-                foreach (var address in mimeMessage.To) replacements.Add(new MailboxAddress(address.Name, _emailSettings.SubstitutionEmailAddress));
+                foreach (var address in mimeMessage.To) replacements.Add(new MailboxAddress(address.Name, _settings.EmailSettings.SubstitutionEmailAddress));
                 mimeMessage.To.Clear();
                 foreach (var address in replacements) mimeMessage.To.Add(address);
                 // substitute all CC emails
                 replacements = new List<MailboxAddress>();
-                foreach (var address in mimeMessage.Cc) replacements.Add(new MailboxAddress(address.Name, _emailSettings.SubstitutionEmailAddress));
+                foreach (var address in mimeMessage.Cc) replacements.Add(new MailboxAddress(address.Name, _settings.EmailSettings.SubstitutionEmailAddress));
                 mimeMessage.Cc.Clear();
                 foreach (var address in replacements) mimeMessage.Cc.Add(address);
                 // substitute all BCC emails
                 replacements = new List<MailboxAddress>();
-                foreach (var address in mimeMessage.Bcc) replacements.Add(new MailboxAddress(address.Name, _emailSettings.SubstitutionEmailAddress));
+                foreach (var address in mimeMessage.Bcc) replacements.Add(new MailboxAddress(address.Name, _settings.EmailSettings.SubstitutionEmailAddress));
                 mimeMessage.Bcc.Clear();
                 foreach (var address in replacements) mimeMessage.Bcc.Add(address);
             }
@@ -76,9 +69,9 @@ namespace WEB
                     // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
                     client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                    await client.ConnectAsync(_emailSettings.MailServer);
+                    await client.ConnectAsync(_settings.EmailSettings.MailServer);
 
-                    await client.AuthenticateAsync(_emailSettings.Sender, _emailSettings.Password);
+                    await client.AuthenticateAsync(_settings.EmailSettings.Sender, _settings.EmailSettings.Password);
 
                     await client.SendAsync(mimeMessage);
 
@@ -88,6 +81,7 @@ namespace WEB
             catch (System.Exception err)
             {
                 //todo: log error
+                throw err;
             }
         }
     }

@@ -107,7 +107,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
          .subscribe(
             () => {
                this.toastr.success("The user has been deleted", "Delete User");
-               this.router.navigate(["../../"], { relativeTo: this.route });
+               this.router.navigate(["../"], { relativeTo: this.route });
             },
             err => {
                this.errorService.handleError(err, "User", "Delete");

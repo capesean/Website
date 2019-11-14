@@ -18,11 +18,13 @@ namespace WEB.Controllers
         internal ApplicationDbContext db;
         internal UserManager<User> userManager;
         internal User CurrentUser;
+        internal Settings Settings;
 
-        internal BaseApiController(ApplicationDbContext applicationDbContext, UserManager<User> userManager)
+        internal BaseApiController(ApplicationDbContext applicationDbContext, UserManager<User> userManager, Settings settings)
         {
             db = applicationDbContext;
             this.userManager = userManager;
+            this.Settings = settings;
             //Task.Delay(2000).Wait();
             //    // added this to force the user to load before any other calls, else there were errors that an async call was already being made...
             //CurrentUser = UserManager.FindByName(User.Identity.Name);

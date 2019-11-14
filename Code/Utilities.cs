@@ -1,16 +1,32 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using WEB.Models;
 
 namespace WEB.Utilities
 {
     public class General
     {
-        public static void SendWelcomeMail(User user, string password)
+        public static async Task SendWelcomeMailAsync(User user, string password, Settings settings)
         {
+            var body = user.FirstName + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "A new account has been created for you on " + settings.SiteName + "." + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "To access the site, please login using your email address and the password below:" + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "<strong>EMAIL/USER ID:</strong> " + user.Email + Environment.NewLine;
+            body += "<strong>PASSWORD:</strong> " + password + Environment.NewLine;
+            body += "<strong>LOGIN URL:</strong> " + settings.RootUrl + "login" + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "You may change your password once you have logged in." + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "You can reset your password at any time, should you forget it, by following the reset link on the login page." + Environment.NewLine;
 
+            await new EmailSender(settings).SendEmailAsync(user.Email, "Account Created", body);
         }
 
         public static string GenerateRandomPassword(PasswordOptions opts = null)

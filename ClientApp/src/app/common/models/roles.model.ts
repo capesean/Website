@@ -6,5 +6,5 @@ export class Role {
 
 export class Roles {
    static Administrator: Role = { value: 0, name: 'Administrator', label: 'Administrator' };
-   static List: Roles[] = [Administrator];
+   static List: Roles[] = [Roles.Administrator];
 }

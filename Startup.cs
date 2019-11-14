@@ -30,8 +30,10 @@ namespace WEB
         {
             services.AddControllers();
 
-            services.Configure<Settings>(Configuration.GetSection("Settings"));
-            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            var settings = Configuration.GetSection("Settings").Get<Settings>();
+            settings.RootPath = Environment.ContentRootPath;
+            settings.IsDevelopment = Environment.IsDevelopment();
+            services.AddSingleton(settings);
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
