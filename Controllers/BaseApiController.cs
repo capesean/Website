@@ -17,7 +17,19 @@ namespace WEB.Controllers
     {
         internal ApplicationDbContext db;
         internal UserManager<User> userManager;
-        internal User CurrentUser;
+        private User _user;
+        internal User CurrentUser
+        {
+            get
+            {
+                if (_user == null)
+                {
+                    _user = db.Users.FirstOrDefault(o => o.UserName == User.Identity.Name);
+                }
+                return _user;
+            }
+
+        }
         internal Settings Settings;
 
         internal BaseApiController(ApplicationDbContext applicationDbContext, UserManager<User> userManager, Settings settings)
