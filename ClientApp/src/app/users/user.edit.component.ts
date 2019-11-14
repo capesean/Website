@@ -71,7 +71,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
             err => {
                this.errorService.handleError(err, "User", "Load");
                if (err instanceof HttpErrorResponse && err.status === 404)
-                  this.router.navigate(["../../"], { relativeTo: this.route });
+                  this.router.navigate(["../"], { relativeTo: this.route });
             }
          );
 

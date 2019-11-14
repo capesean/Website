@@ -4,14 +4,6 @@ export class Enum {
    label: string;
 }
 
-export enum Roles {
-   Administrator
-}
-
 export class Enums {
-
-    static Roles: Enum[] = [
-      { value: 0, name: 'Administrator', label: 'Administrator' }
-    ]
 
 }
