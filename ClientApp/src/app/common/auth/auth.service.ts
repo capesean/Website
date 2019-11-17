@@ -1,8 +1,8 @@
 import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { Observable, Subscription, BehaviorSubject, of, interval, throwError } from 'rxjs';
-import { AuthStateModel, AuthTokenModel, ProfileModel, LoginModel, RefreshGrantModel, RegisterModel, ResetPasswordModel, ResetModel, ChangePasswordModel } from './auth.models';
+import { Observable, Subscription, BehaviorSubject, of, interval, throwError, ReplaySubject } from 'rxjs';
+import { AuthStateModel, AuthTokenModel, JwtTokenModel, LoginModel, RefreshGrantModel, RegisterModel, ResetPasswordModel, ResetModel, ChangePasswordModel, ProfileModel } from './auth.models';
 import { filter, map, first, flatMap, catchError, tap, mergeMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { Role } from '../models/roles.model';
@@ -12,14 +12,14 @@ const jwt = new JwtHelperService();
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-   private initalState: AuthStateModel = { profile: null, tokens: null, authReady: false };
+   private initalState: AuthStateModel = { jwtToken: null, tokens: null, authReady: false };
    private authReady$ = new BehaviorSubject<boolean>(false);
    private state: BehaviorSubject<AuthStateModel>;
    private refreshSubscription$: Subscription;
 
    state$: Observable<AuthStateModel>;
    tokens$: Observable<AuthTokenModel>;
-   profile$: Observable<ProfileModel>;
+   jwtToken$: Observable<JwtTokenModel>;
    loggedIn$: Observable<boolean>;
 
    constructor(
@@ -32,9 +32,9 @@ export class AuthService {
          .pipe(filter(state => state.authReady))
          .pipe(map(state => state.tokens));
 
-      this.profile$ = this.state
+      this.jwtToken$ = this.state
          .pipe(filter(state => state.authReady))
-         .pipe(map(state => state.profile));
+         .pipe(map(state => state.jwtToken));
 
       this.loggedIn$ = this.tokens$
          .pipe(map(tokens => !!tokens));
@@ -46,15 +46,15 @@ export class AuthService {
    }
 
    register(data: RegisterModel): Observable<Response> {
-      return this.http.post<Response>(`${environment.baseApiUrl}accounts/register`, data);
+      return this.http.post<Response>(`${environment.baseApiUrl}authorization/register`, data);
    }
 
    resetPassword(data: ResetPasswordModel): Observable<void> {
-      return this.http.post<void>(`${environment.baseApiUrl}accounts/resetpassword`, data);
+      return this.http.post<void>(`${environment.baseApiUrl}authorization/resetpassword`, data);
    }
 
    reset(data: ResetModel): Observable<void> {
-      return this.http.post<void>(`${environment.baseApiUrl}accounts/reset`, data);
+      return this.http.post<void>(`${environment.baseApiUrl}authorization/reset`, data);
    }
 
    login(user: LoginModel): Observable<any> {
@@ -64,22 +64,35 @@ export class AuthService {
    }
 
    logout(): void {
-      this.updateState({ profile: null, tokens: null });
+      this.updateState({ jwtToken: null, tokens: null });
       if (this.refreshSubscription$) {
          this.refreshSubscription$.unsubscribe();
       }
       this.removeToken();
+      this._profile = undefined;
    }
 
    changePassword(changePassword: ChangePasswordModel): Observable<void> {
-      return this.http.post<void>(`${environment.baseApiUrl}accounts/changepassword`, changePassword);
+      return this.http.post<void>(`${environment.baseApiUrl}authorization/changepassword`, changePassword);
+   }
+
+   protected _profile: ProfileModel;
+   getProfile(refresh?: boolean): Observable<ProfileModel> {
+      if (!refresh && this._profile) {
+         return of(this._profile);
+      }
+      return this.http
+         .get<ProfileModel>(`${environment.baseApiUrl}authorization/profile`)
+         .pipe(tap(profile => {
+            this._profile = profile;
+         }));
    }
 
    isInRole(profile: ProfileModel, role: string | Role): boolean {
-      if (!profile || !profile.role) return false;
+      if (!profile || !profile.roles) return false;
       if (typeof (role) === "object") role = role.name;
-      if (typeof (profile.role) === "string") return role === profile.role;
-      return profile.role.indexOf(role) !== -1;
+      if (typeof (profile.roles) === "string") return role === profile.roles;
+      return profile.roles.indexOf(role) !== -1;
    }
 
    refreshTokens(): Observable<AuthTokenModel> {
@@ -129,10 +142,10 @@ export class AuthService {
             const now = new Date();
             tokens.expiration_date = new Date(now.getTime() + tokens.expires_in * 1000).getTime().toString();
 
-            const profile: ProfileModel = jwt.decodeToken(tokens.id_token);
+            const jwtToken: JwtTokenModel = jwt.decodeToken(tokens.id_token);
 
             this.storeToken(tokens);
-            this.updateState({ authReady: true, tokens, profile });
+            this.updateState({ authReady: true, tokens, jwtToken });
          }));
    }
 
@@ -143,8 +156,8 @@ export class AuthService {
                this.updateState({ authReady: true });
                return throwError('No token in Storage');
             }
-            const profile: ProfileModel = jwt.decodeToken(tokens.id_token);
-            this.updateState({ tokens, profile });
+            const jwtToken: JwtTokenModel = jwt.decodeToken(tokens.id_token);
+            this.updateState({ tokens, jwtToken });
 
             if (+tokens.expiration_date > new Date().getTime()) {
                this.updateState({ authReady: true });
@@ -153,8 +166,6 @@ export class AuthService {
             return this.refreshTokens();
          }))
          .pipe(catchError(error => {
-            debugger;
-            alert("refirect to login?");
             this.logout();
             this.updateState({ authReady: true });
             return throwError(error);

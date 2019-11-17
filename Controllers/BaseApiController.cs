@@ -24,7 +24,9 @@ namespace WEB.Controllers
             {
                 if (_user == null)
                 {
-                    _user = db.Users.FirstOrDefault(o => o.UserName == User.Identity.Name);
+                    _user = db.Users
+                        .Include(o => o.Roles)
+                        .FirstOrDefault(o => o.UserName == User.Identity.Name);
                 }
                 return _user;
             }

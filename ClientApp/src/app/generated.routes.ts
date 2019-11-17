@@ -5,6 +5,7 @@ import { MainComponent } from './main.component';
 import { CustomRoutes } from './custom.routes';
 import { UserListComponent } from './users/user.list.component';
 import { UserEditComponent } from './users/user.edit.component';
+import { ChangePasswordComponent } from './users/changepassword.component';
 
 export const GeneratedRoutes: Route[] = [
    {
@@ -19,6 +20,13 @@ export const GeneratedRoutes: Route[] = [
             component: HomeComponent,
             pathMatch: 'full',
             data: { breadcrumb: 'Home' },
+         },
+         {
+            path: 'changepassword',
+            canActivate: [AccessGuard],
+            canActivateChild: [AccessGuard],
+            component: ChangePasswordComponent,
+            data: { breadcrumb: 'Change Password' },
          },
          {
             path: 'users',

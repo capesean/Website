@@ -1,7 +1,5 @@
 import { Route } from '@angular/router';
 import { AccessGuard } from './common/auth/accessguard';
-import { NotFoundComponent } from './common/notfound.component';
-//import { XYZComponent } from './xyz/xyz.component';
 
 export const CustomRoutes: Route[] = [
    //{
@@ -11,8 +9,4 @@ export const CustomRoutes: Route[] = [
    //   component: XYZComponent,
    //   data: { breadcrumb: 'XYZ' }
    //},
-   //{
-   //   path: "**",
-   //   component: NotFoundComponent
-   //}
 ];

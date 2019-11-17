@@ -1,3 +1,13 @@
+export interface ProfileModel {
+   firstName: string;
+   lastName: string;
+   fullName: string;
+   userId: string;
+   roles: string[] | string;
+   userName: string;
+   email: string;
+}
+
 export interface LoginModel {
    username: string;
    password: string;
@@ -23,7 +33,7 @@ export interface RegisterModel {
 
 export interface AuthStateModel {
    tokens?: AuthTokenModel;
-   profile?: ProfileModel;
+   jwtToken?: JwtTokenModel;
    authReady?: boolean;
 }
 
@@ -46,7 +56,7 @@ export class ChangePasswordModel {
    confirmPassword: string;
 }
 
-export interface ProfileModel {
+export interface JwtTokenModel {
    sub: string;
    jti: string;
    useage: string;
@@ -56,7 +66,7 @@ export interface ProfileModel {
    iat: number;
    iss: string;
 
-   unique_name: string;
-   email_confirmed: boolean;
+   //unique_name: string;
+   //email_confirmed: boolean;
    role: string[] | string;
 }

@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
 import { ErrorService } from '../common/services/error.service';
-import { UserService } from '../common/services/user.service';
 import { ChangePasswordModel } from '../common/auth/auth.models';
 import { AuthService } from '../common/auth/auth.service';
 

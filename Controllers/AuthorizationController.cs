@@ -1,44 +1,56 @@
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AspNet.Security.OpenIdConnect.Extensions;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server;
+using OpenIddict.Validation;
+using WEB;
+using WEB.Controllers;
 using WEB.Models;
 
 namespace AuthorizationServer.Controllers
 {
-    [ApiController]
-    public class AuthorizationController : ControllerBase
+    [Route("api/[Controller]")]
+    public class AuthorizationController : BaseApiController
     {
-        private readonly IOptions<IdentityOptions> _identityOptions;
         private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly IOptions<IdentityOptions> _identityOptions;
+        private IEmailSender emailSender;
 
         public AuthorizationController(
-            IOptions<IdentityOptions> identityOptions,
-            SignInManager<User> signInManager,
-            UserManager<User> userManager)
+            ApplicationDbContext _db,
+            UserManager<User> _um,
+            Settings _settings,
+            SignInManager<User> _sm,
+            IOptions<IdentityOptions> _id,
+            IEmailSender _es)
+            : base(_db, _um, _settings)
         {
-            _identityOptions = identityOptions;
-            _signInManager = signInManager;
-            _userManager = userManager;
+            _signInManager = _sm;
+            _identityOptions = _id;
+            emailSender = _es;
         }
 
-        [HttpPost("~/connect/token"), Produces("application/json")]
+        [HttpPost("~/connect/token"), Produces("application/json"), AllowAnonymous]
         public async Task<IActionResult> Exchange()
         {
             var request = HttpContext.GetOpenIdConnectRequest();
             if (request.IsPasswordGrantType())
             {
-                var user = await _userManager.FindByNameAsync(request.Username);
+                var user = await userManager.FindByNameAsync(request.Username);
                 if (user == null)
                 {
                     return BadRequest(new OpenIdConnectResponse
@@ -74,7 +86,7 @@ namespace AuthorizationServer.Controllers
                 // Note: if you want to automatically invalidate the refresh token
                 // when the user password/roles change, use the following line instead:
                 // var user = _signInManager.ValidateSecurityStampAsync(info.Principal);
-                var user = await _userManager.GetUserAsync(info.Principal);
+                var user = await userManager.GetUserAsync(info.Principal);
                 if (user == null)
                 {
                     return BadRequest(new OpenIdConnectResponse
@@ -106,6 +118,30 @@ namespace AuthorizationServer.Controllers
                 Error = OpenIdConnectConstants.Errors.UnsupportedGrantType,
                 ErrorDescription = "The specified grant type is not supported."
             });
+        }
+
+        [HttpGet, Route("profile")]
+        public async Task<IActionResult> Profile()
+        {
+            // add properties to profile as needed
+            var roleIds = CurrentUser.Roles.Select(o => o.RoleId).ToArray();
+
+            var roleNames = await db.Roles
+                .Where(o => roleIds.Contains(o.Id))
+                .Select(o => o.Name)
+                .ToListAsync();
+
+            var profile = new ProfileModel
+            {
+                Email = CurrentUser.Email,
+                FirstName = CurrentUser.FirstName,
+                LastName = CurrentUser.LastName,
+                FullName = CurrentUser.FullName,
+                UserId = CurrentUser.Id,
+                Roles = roleNames,
+            };
+
+            return Ok(profile);
         }
 
         private async Task<AuthenticationTicket> CreateTicketAsync(
@@ -177,6 +213,142 @@ namespace AuthorizationServer.Controllers
             identity.AddClaim(lastNameClaim);
 
             return ticket;
+        }
+
+        [HttpPost("[Action]"), Authorize(AuthenticationSchemes = OpenIddictValidationDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordDTO changePasswordDTO)
+        {
+            // todo: check if enabled? user.enabled - also in login, reset, BaseApiController, etc.
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (changePasswordDTO.NewPassword != changePasswordDTO.ConfirmPassword) return BadRequest("Passwords do not match");
+
+            var user = await db.Users.FirstOrDefaultAsync(o => o.UserName == User.Identity.Name);
+            if (user == null) return NotFound();
+
+            var result = await userManager.ChangePasswordAsync(user, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
+
+            if (!result.Succeeded) return BadRequest(result.Errors.First().Description);
+
+            var body = user.FirstName + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "Your password has been changed." + Environment.NewLine;
+
+            await emailSender.SendEmailAsync(user.Email, "Password Changed", body);
+
+            return Ok();
+        }
+
+        [HttpPost("[Action]"), AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordDTO resetPasswordDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var user = await db.Users.FirstOrDefaultAsync(o => o.UserName == resetPasswordDTO.UserName);
+            if (user == null) return NotFound();
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            var body = user.FirstName + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "A password reset has been requested. Please use the link below to reset your password." + Environment.NewLine;
+            body += Environment.NewLine;
+            body += Settings.RootUrl + "auth/reset?e=" + user.Email + "&t=" + WebUtility.UrlEncode(token) + Environment.NewLine;
+
+            await emailSender.SendEmailAsync(user.Email, "Password Reset", body);
+
+            return Ok();
+        }
+
+        [HttpPost("[Action]"), AllowAnonymous]
+        public async Task<IActionResult> Reset([FromBody]ResetDTO resetDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (resetDTO.NewPassword != resetDTO.ConfirmPassword) return BadRequest("Passwords do not match");
+
+            var user = await db.Users.FirstOrDefaultAsync(o => o.UserName == resetDTO.UserName);
+            if (user == null) return NotFound(); // todo: should be BadRequest("Invalid email")?
+
+            var result = await userManager.ResetPasswordAsync(user, resetDTO.Token, resetDTO.NewPassword);
+
+            if (!result.Succeeded) return BadRequest(result.Errors.First().Description);
+
+            var body = user.FirstName + Environment.NewLine;
+            body += Environment.NewLine;
+            body += "Your password has been reset." + Environment.NewLine;
+
+            await emailSender.SendEmailAsync(user.Email, "Password Reset", body);
+
+            return Ok();
+        }
+
+        [HttpPost("[Action]"), AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody]RegisterDTO registerDTO)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var user = new User
+            {
+                UserName = registerDTO.UserName,
+                Email = registerDTO.UserName,
+                FirstName = "first name",
+                LastName = "last name",
+                EmailConfirmed = true
+            };
+
+            var result = await this.userManager.CreateAsync(user, registerDTO.Password);
+
+            if (!result.Succeeded) return BadRequest(string.Join(", ", result.Errors.Select(o => o.Code + ": " + o.Description)));
+
+            await userManager.AddToRoleAsync(user, Roles.Administrator.ToString());
+
+            return Ok();
+        }
+
+        public class ProfileModel
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string FullName { get; set; }
+            public Guid UserId { get; set; }
+            public List<string> Roles { get; set; }
+            public string UserName { get; set; }
+            public string Email { get; set; }
+        }
+
+        public class RegisterDTO
+        {
+            [Required]
+            public string UserName { get; set; }
+            [Required]
+            public string Password { get; set; }
+        }
+
+        public class ResetPasswordDTO
+        {
+            [Required]
+            public string UserName { get; set; }
+        }
+
+        public class ResetDTO
+        {
+            [Required]
+            public string UserName { get; set; }
+            [Required]
+            public string NewPassword { get; set; }
+            [Required]
+            public string ConfirmPassword { get; set; }
+            [Required]
+            public string Token { get; set; }
+        }
+
+        public class ChangePasswordDTO
+        {
+            [Required]
+            public string CurrentPassword { get; set; }
+            [Required]
+            public string NewPassword { get; set; }
+            [Required]
+            public string ConfirmPassword { get; set; }
         }
     }
 }

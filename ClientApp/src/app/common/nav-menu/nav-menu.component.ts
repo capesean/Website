@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import { ProfileModel } from '../auth/auth.models';
+import { JwtTokenModel, ProfileModel } from '../auth/auth.models';
 import { Roles } from '../models/roles.model';
 
 @Component({
@@ -23,7 +23,7 @@ export class NavMenuComponent implements OnInit {
    }
 
    ngOnInit(): void {
-      this.authService.profile$.subscribe(profile => {
+      this.authService.getProfile().subscribe(profile => {
          this.profile = profile;
          this.isAdmin = this.authService.isInRole(profile, Roles.Administrator);
       });
