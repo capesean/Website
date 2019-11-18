@@ -47,7 +47,7 @@ export class ChangePasswordComponent implements OnInit {
          .subscribe(
             () => {
                this.toastr.success("Your password has been changed", "Change Password");
-               form.reset();
+               form.resetForm();
                this.changePassword = new ChangePasswordModel();
             },
             err => {

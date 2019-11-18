@@ -31,7 +31,7 @@ namespace WEB
             services.AddControllers();
 
             var settings = Configuration.GetSection("Settings").Get<Settings>();
-            settings.RootPath = Environment.ContentRootPath;
+            settings.RootPath = Environment.ContentRootPath + (Environment.ContentRootPath.EndsWith(@"\") ? "" : @"\");
             settings.IsDevelopment = Environment.IsDevelopment();
             services.AddSingleton(settings);
 
