@@ -20,14 +20,6 @@ export class DownloadService extends SearchQuery {
          );
    }
 
-   comparisonReport(municipalityId: string, sectorId: string, dateId: string, indicatorTypes: Enum[]): Observable<DownloadModel> {
-      const queryParams: HttpParams = this.buildQueryParams({ indicatorTypes: indicatorTypes });
-      return this.http.get<DownloadModel>(`${environment.baseApiUrl}downloads/comparison/${municipalityId}/${sectorId}/${dateId}`, { responseType: 'blob' as 'json', observe: 'response', params: queryParams })
-         .pipe(
-            map(response => this.convertResponse(response))
-         );
-   }
-
    private convertResponse(response: HttpResponse<any>): DownloadModel {
       let contentType = response.headers.get('Content-Type');
       let contentDispositionHeader = response.headers.get('Content-Disposition');
