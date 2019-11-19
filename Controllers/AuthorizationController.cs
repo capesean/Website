@@ -60,6 +60,15 @@ namespace AuthorizationServer.Controllers
                     });
                 }
 
+                if (!user.Enabled || user.LockoutEnd > DateTime.Now)
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The user has been disabled."
+                    });
+                }
+
                 // Validate the username/password parameters and ensure the account is not locked out.
                 var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
                 if (!result.Succeeded)
@@ -87,12 +96,22 @@ namespace AuthorizationServer.Controllers
                 // when the user password/roles change, use the following line instead:
                 // var user = _signInManager.ValidateSecurityStampAsync(info.Principal);
                 var user = await userManager.GetUserAsync(info.Principal);
+
                 if (user == null)
                 {
                     return BadRequest(new OpenIdConnectResponse
                     {
                         Error = OpenIdConnectConstants.Errors.InvalidGrant,
                         ErrorDescription = "The refresh token is no longer valid."
+                    });
+                }
+
+                if (!user.Enabled || user.LockoutEnd > DateTime.Now)
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The user has been disabled."
                     });
                 }
 

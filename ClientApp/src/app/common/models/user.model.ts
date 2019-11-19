@@ -6,6 +6,7 @@ export class User {
    firstName: string;
    lastName: string;
    fullName: string;
+   enabled: boolean;
    roles: Role[] = [];
 
    constructor() {

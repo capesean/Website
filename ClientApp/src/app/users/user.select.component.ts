@@ -1,7 +1,8 @@
-import { Component, OnInit, forwardRef, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, forwardRef, ViewChild, Input, EventEmitter, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { UserModalComponent } from './user.modal.component';
 import { User } from '../common/models/user.model';
+import { Enum } from '../common/models/enums.model';
 
 @Component({
    selector: 'user-select',
@@ -17,6 +18,8 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
 
    @Input() id: string;
    @Input() user: User;
+   @Output() userChange = new EventEmitter<User>();
+   @Input() canRemoveFilters: boolean = false;
 
    multiple: boolean = false;
    showAddNew: boolean = false;
@@ -53,8 +56,9 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
    }
 
    change(user: User) {
-		if (this.disabled) return;
+      if (this.disabled) return;
       this.user = user;
+      this.userChange.emit(user);
       this.writeValue(user ? user.id : null);
    }
 
@@ -63,7 +67,7 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
    }
 
    openModal() {
-		if (this.disabled) return;
+      if (this.disabled) return;
       this.modal.open();
    }
 }

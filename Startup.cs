@@ -110,7 +110,7 @@ namespace WEB
                     options.AllowRefreshTokenFlow();
                     // todo: in settings
                     options.SetAccessTokenLifetime(TimeSpan.FromSeconds(60 * 10));
-                    options.SetRefreshTokenLifetime(TimeSpan.FromDays(1));
+                    options.SetRefreshTokenLifetime(TimeSpan.FromDays(7));
 
                     // Accept anonymous clients (i.e clients that don't send a client_id).
                     options.AcceptAnonymousClients();

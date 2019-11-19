@@ -6,6 +6,7 @@ import { AuthStateModel, AuthTokenModel, JwtTokenModel, LoginModel, RefreshGrant
 import { filter, map, first, flatMap, catchError, tap, mergeMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { Role } from '../models/roles.model';
+import { Router } from '@angular/router';
 
 const jwt = new JwtHelperService();
 
@@ -24,6 +25,7 @@ export class AuthService {
 
    constructor(
       private http: HttpClient,
+      private router: Router
    ) {
       this.state = new BehaviorSubject<AuthStateModel>(this.initalState);
       this.state$ = this.state.asObservable();
@@ -100,7 +102,10 @@ export class AuthService {
          .pipe(first())
          .pipe(map(state => state.tokens))
          .pipe(mergeMap(tokens => this.getTokens({ refresh_token: tokens.refresh_token }, 'refresh_token')
-            .pipe(catchError(error => throwError('Session Expired')))
+            .pipe(catchError(error => {
+               if (window.location.pathname !== "/auth/login") this.router.navigate(["/auth/login"]);
+               return throwError('Session Expired');
+            }))
          ));
    }
 

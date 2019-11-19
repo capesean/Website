@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, TemplateRef, Input } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import { UserSearchOptions, UserSearchResponse, User } from '../common/models/user.model';
@@ -23,16 +23,17 @@ export class UserModalComponent implements OnInit {
 
    @ViewChild('content', { static: false }) content: TemplateRef<any>;
    @Output() change: EventEmitter<User> = new EventEmitter<User>();
+   @Input() canRemoveFilters: boolean = false;
 
    constructor(
       private modalService: NgbModal,
       private userService: UserService,
       private errorService: ErrorService
    ) {
-      this.searchOptions.includeEntities = true;
    }
 
    ngOnInit(): void {
+      this.searchOptions.includeEntities = true;
    }
 
    open() {

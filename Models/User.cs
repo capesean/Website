@@ -15,6 +15,9 @@ namespace WEB.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public string FullName { get; private set; }
 
+        [Required]
+        public bool Enabled { get; set; }
+
         public User()
         {
             Id = Guid.NewGuid();
