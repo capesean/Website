@@ -6,7 +6,9 @@ export class SearchQuery {
       let target: HttpParams = new HttpParams();
       Object.keys(source).forEach((key: string) => {
          const value: string | number | boolean | Date = source[key];
-         if ((typeof value !== 'undefined') && (value !== null)) {
+         if (value instanceof Array) {
+            value.forEach(v => target = target.append(key, v));
+         } else if ((typeof value !== 'undefined') && (value !== null)) {
             target = target.append(key, value.toString());
          }
       });

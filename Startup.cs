@@ -75,12 +75,12 @@ namespace WEB
                 }
                 else
                 {
+                    // todo: in settings
                     options.Password.RequireDigit = true;
                     options.Password.RequireLowercase = true;
                     options.Password.RequireUppercase = true;
                     options.Password.RequireNonAlphanumeric = true;
                     options.Password.RequiredLength = 6;
-
                 }
 
                 options.User.RequireUniqueEmail = true;
@@ -108,6 +108,7 @@ namespace WEB
                     // Enable the password flow.
                     options.AllowPasswordFlow();
                     options.AllowRefreshTokenFlow();
+                    // todo: in settings
                     options.SetAccessTokenLifetime(TimeSpan.FromSeconds(60 * 10));
                     options.SetRefreshTokenLifetime(TimeSpan.FromDays(1));
 
@@ -136,6 +137,7 @@ namespace WEB
                 // default token format or with reference tokens and cannot be used with
                 // JWT tokens. For JWT tokens, use the Microsoft JWT bearer handler.
                 .AddValidation();
+
 
             // If you prefer using JWT, don't forget to disable the automatic
             // JWT -> WS-Federation claims mapping used by the JWT middleware:
@@ -175,6 +177,12 @@ namespace WEB
                 config.Events.OnRedirectToAccessDenied = context =>
                 {
                     context.Response.StatusCode = 403;
+                    return Task.CompletedTask;
+                };
+                config.Events.OnRedirectToLogin = context =>
+                {
+                    // redirect to /auth/login here?
+                    context.Response.StatusCode = 401;
                     return Task.CompletedTask;
                 };
 
