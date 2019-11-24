@@ -25,7 +25,6 @@ import { UserModalComponent } from './users/user.modal.component';
       PagerComponent,
       MainComponent,
       NavMenuComponent,
-      NgbModule,
       MomentPipe,
       UserSelectComponent, UserModalComponent
    ],

@@ -6,7 +6,7 @@ export const environment = {
    production: false,
    baseApiUrl: 'https://localhost:00000/api/',
    baseAuthUrl: 'https://localhost:00000/',
-   siteName: 'SiteName'
+   siteName: 'SITENAME'
 };
 
 /*
