@@ -71,7 +71,8 @@ namespace WEB.Models
                     Email = email,
                     FirstName = firstName,
                     LastName = lastName,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    Enabled = true
                 };
                 var result = await um.CreateAsync(user, password);
                 if (!result.Succeeded) throw new System.Exception(string.Join(", ", result.Errors));

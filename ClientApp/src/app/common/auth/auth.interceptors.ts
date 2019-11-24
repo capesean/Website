@@ -21,7 +21,6 @@ export class AuthoriseRequestInterceptor implements HttpInterceptor {
          .pipe(
             switchMap(token => {
                if (token) {
-
                   const cloned = req.clone({
                      headers: req.headers.set("Authorization", `Bearer ${token.access_token}`)
                   });
@@ -50,15 +49,10 @@ export class UnauthorisedResponseInterceptor implements HttpInterceptor {
             catchError(
                (err) => {
                   if (err.status === 401) {
-                     this.authService.loggedIn$.subscribe(
-                        isLoggedIn => {
-                           if (isLoggedIn) this.router.navigate(['/']);
-                           else {
-                              this.router.navigate(['/auth/login']);
-                           }
-                        }
-                     );
-                     return throwError("Access denied: Unauthorized");
+                     this.router.navigate(['/auth/login']);
+                  }
+                  else if (err.status === 403) {
+                     this.router.navigate(['/']);
                   } else {
                      //const error = err.message || err.statusText;
                      return throwError(err);

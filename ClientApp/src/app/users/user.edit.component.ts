@@ -1,12 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BreadcrumbService } from 'angular-crumbs';
 import { ErrorService } from '../common/services/error.service';
-import { PagingOptions } from '../common/models/http.model';
 import { User } from '../common/models/user.model';
 import { UserService } from '../common/services/user.service';
 import { Roles } from '../common/models/roles.model';
@@ -15,11 +13,10 @@ import { Roles } from '../common/models/roles.model';
    selector: 'user-edit',
    templateUrl: './user.edit.component.html'
 })
-export class UserEditComponent implements OnInit, OnDestroy {
+export class UserEditComponent implements OnInit {
 
    private user: User = new User();
    private isNew: boolean = true;
-   private routerSubscription: Subscription;
    private roles = Roles.List;
 
    constructor(
@@ -34,30 +31,16 @@ export class UserEditComponent implements OnInit, OnDestroy {
 
    ngOnInit(): void {
 
-      this.route.params.subscribe(params => {
+      let id = this.route.snapshot.paramMap.get("id");
+      this.isNew = id === "add";
 
-         let id = params["id"];
-         this.isNew = id === "add";
+      if (!this.isNew) {
 
-         if (!this.isNew) {
+         this.user.id = id;
+         this.loadUser();
 
-            this.user.id = id;
-            this.loadUser();
+      }
 
-         }
-
-         this.routerSubscription = this.router.events.subscribe(event => {
-            if (event instanceof NavigationEnd && !this.route.firstChild) {
-               this.loadUser();
-            }
-         });
-
-      });
-
-   }
-
-   ngOnDestroy(): void {
-      this.routerSubscription.unsubscribe();
    }
 
    private loadUser() {
