@@ -8,16 +8,15 @@ import { MomentPipe } from './common/pipes/momentPipe';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-// imports
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { UserSelectComponent } from './users/user.select.component';
 import { UserModalComponent } from './users/user.modal.component';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
 
 @NgModule({
    imports: [
       CommonModule,
-      RouterModule,
       FormsModule,
+      RouterModule,
       NgbModule,
       DragDropModule,
       BreadcrumbModule
@@ -26,19 +25,17 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
       PagerComponent,
       MainComponent,
       NavMenuComponent,
+      NgbModule,
       MomentPipe,
-      // components...
-      UserSelectComponent,
-      UserModalComponent
+      UserSelectComponent, UserModalComponent
    ],
    exports: [
       PagerComponent,
       MainComponent,
       NavMenuComponent,
+      NgbModule,
       MomentPipe,
-      // components
-      UserSelectComponent,
-      UserModalComponent
+      UserSelectComponent, UserModalComponent
    ]
 })
 export class SharedModule { }
