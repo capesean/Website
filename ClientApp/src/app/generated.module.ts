@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PagerComponent } from './common/pager.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DragDropModule } from '@angular/cdk/drag-drop;
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { UserListComponent } from './users/user.list.component';
 import { UserEditComponent } from './users/user.edit.component';
 import { UserSelectComponent } from './users/user.select.component';
