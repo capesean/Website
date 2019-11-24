@@ -4,20 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { UserListComponent } from './users/user.list.component';
-import { UserEditComponent } from './users/user.edit.component';
 import { SharedModule } from './shared.module';
-import { GeneratedRoutes } from './generated.routes';
+import { HomeComponent } from './home/home.component';
+import { ChangePasswordComponent } from './users/changepassword.component';
+import { CustomRoutes } from './custom.routes';
 
 @NgModule({
-   declarations: [UserListComponent, UserEditComponent],
+   declarations: [HomeComponent, ChangePasswordComponent],
    imports: [
       CommonModule,
       FormsModule,
-      RouterModule.forChild(GeneratedRoutes),
+      RouterModule.forChild(CustomRoutes),
       NgbModule,
       DragDropModule,
       SharedModule
    ]
 })
-export class GeneratedModule { }
+export class CustomModule { }

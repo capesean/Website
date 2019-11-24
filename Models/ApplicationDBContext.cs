@@ -42,11 +42,11 @@ namespace WEB.Models
             //// if not using migrations:
             //Database.EnsureDeleted();
             //Database.EnsureCreated();
+            //AddComputedColumns();
 
             //// if using migrations:
-            ////Database.EnsureCreated();
-            ////Database.Migrate();
-
+            //Database.EnsureCreated();
+            //Database.Migrate();
             //AddComputedColumns();
 
             await SeedAsync(um, rm);

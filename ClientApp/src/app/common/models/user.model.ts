@@ -8,6 +8,7 @@ export class User {
    fullName: string;
    enabled: boolean;
    roles: Role[] = [];
+   email: string;
 
    constructor() {
       this.id = "00000000-0000-0000-0000-000000000000";

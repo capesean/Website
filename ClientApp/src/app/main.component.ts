@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { BreadcrumbService, Breadcrumb } from 'angular-crumbs';
 import { MenuItem } from 'primeng/api';
 import { DOCUMENT } from '@angular/common';
+import { environment } from '../environments/environment';
 
 @Component({
    selector: 'main-root',
@@ -36,8 +37,7 @@ export class MainComponent implements OnInit {
    }
 
    private createTitle(routesCollection: Breadcrumb[]) {
-      // todo: get from settings
-      const title = 'WEBSITE';
+      const title = environment.siteName;
       const titles = routesCollection.filter((route) => route.displayName);
 
       if (!titles.length) { return title; }

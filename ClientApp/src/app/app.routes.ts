@@ -10,6 +10,15 @@ export const AppRoutes: Route[] = [
       path: '',
       component: MainComponent,
       data: {},
-      loadChildren: './generated.module#GeneratedModule',
+      children: [
+         {
+            path: '',
+            loadChildren: './custom.module#CustomModule',
+         },
+         {
+            path: '',
+            loadChildren: './generated.module#GeneratedModule',
+         }
+      ]
    }
 ];

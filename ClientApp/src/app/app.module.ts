@@ -9,20 +9,15 @@ import { NgHttpLoaderModule } from 'ng-http-loader';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BreadcrumbService } from 'angular-crumbs';
+import { BreadcrumbService, BreadcrumbComponent } from 'angular-crumbs';
 import { ErrorService } from './common/services/error.service';
-import { MainComponent } from './main.component';
 import { NotFoundComponent } from './common/notfound.component';
-import { HomeComponent } from './home/home.component';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { AccessGuard } from './common/auth/accessguard';
-import { NavMenuComponent } from './common/nav-menu/nav-menu.component';
 import { AuthoriseRequestInterceptor, UnauthorisedResponseInterceptor } from './common/auth/auth.interceptors';
-import { GeneratedModule } from './generated.module';
-import { ChangePasswordComponent } from './users/changepassword.component';
+import { SharedModule } from './shared.module';
 
 @NgModule({
-   declarations: [AppComponent, NavMenuComponent, MainComponent, HomeComponent, ChangePasswordComponent, NotFoundComponent],
+   declarations: [AppComponent, NotFoundComponent],
    imports: [
       BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
       HttpClientModule,
@@ -36,11 +31,10 @@ import { ChangePasswordComponent } from './users/changepassword.component';
       }),
       NgHttpLoaderModule.forRoot(),
       BrowserAnimationsModule,
-      BreadcrumbModule,
       FormsModule,
       ReactiveFormsModule,
       NgbModule,
-      GeneratedModule
+      SharedModule
    ],
    providers: [
       { provide: HTTP_INTERCEPTORS, useClass: AuthoriseRequestInterceptor, multi: true },

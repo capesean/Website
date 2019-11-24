@@ -15,17 +15,17 @@ import { Roles } from '../common/models/roles.model';
 })
 export class UserEditComponent implements OnInit {
 
-   private user: User = new User();
-   private isNew: boolean = true;
-   private roles = Roles.List;
+   public user: User = new User();
+   public isNew: boolean = true;
+   public roles = Roles.List;
 
    constructor(
       private router: Router,
       private route: ActivatedRoute,
       private toastr: ToastrService,
       private breadcrumbService: BreadcrumbService,
-      private errorService: ErrorService,
       private userService: UserService,
+      private errorService: ErrorService
    ) {
    }
 

@@ -12,7 +12,7 @@ import { AuthService } from '../common/auth/auth.service';
 })
 export class ChangePasswordComponent implements OnInit {
 
-   private changePassword: ChangePasswordModel = new ChangePasswordModel();
+   changePassword: ChangePasswordModel = new ChangePasswordModel();
 
    constructor(
       private router: Router,

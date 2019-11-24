@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { PagingOptions } from '../common/models/http.model';
 import { ErrorService } from '../common/services/error.service';
@@ -12,13 +12,13 @@ import { UserService } from '../common/services/user.service';
 })
 export class UserListComponent implements OnInit {
 
-   private users: User[] = [];
-   private searchOptions = new UserSearchOptions();
-   private headers = new PagingOptions();
+   public users: User[] = [];
+   public searchOptions = new UserSearchOptions();
+   public headers = new PagingOptions();
    private routerSubscription: Subscription;
 
    constructor(
-      private route: ActivatedRoute,
+      public route: ActivatedRoute,
       private router: Router,
       private errorService: ErrorService,
       private userService: UserService
