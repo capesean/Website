@@ -303,6 +303,8 @@ namespace AuthorizationServer.Controllers
         [HttpPost("[Action]"), AllowAnonymous]
         public async Task<IActionResult> Register([FromBody]RegisterDTO registerDTO)
         {
+            throw new System.Exception("Not Implemented - Register");
+
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var user = new User
