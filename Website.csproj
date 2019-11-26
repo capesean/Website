@@ -14,17 +14,17 @@
 
   <ItemGroup>
     <PackageReference Include="iTextSharp-LGPL" Version="4.1.6" />
-    <PackageReference Include="MailKit" Version="2.4.1" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
-    <PackageReference Include="MimeKit" Version="2.4.1" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.1" />
     <PackageReference Include="OpenIddict.Mvc" Version="2.0.1" />
     <PackageReference Include="OpenIddict.Server" Version="2.0.1" />
     <PackageReference Include="OpenIddict.Validation" Version="2.0.1" />
+    <PackageReference Include="Sendgrid" Version="9.12.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +36,10 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\common\pipes\momentPipe.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\templates\email.html" />
   </ItemGroup>
 
   <ItemGroup>

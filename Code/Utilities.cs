@@ -26,7 +26,7 @@ namespace WEB.Utilities
             body += Environment.NewLine;
             body += "You can reset your password at any time, should you forget it, by following the reset link on the login page." + Environment.NewLine;
 
-            await new EmailSender(settings).SendEmailAsync(user.Email, "Account Created", body);
+            await new EmailSender(settings).SendEmailAsync(user.Email, user.FullName, "Account Created", body);
         }
 
         public static string GenerateRandomPassword(PasswordOptions opts = null)

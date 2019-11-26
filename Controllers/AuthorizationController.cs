@@ -252,7 +252,7 @@ namespace AuthorizationServer.Controllers
             body += Environment.NewLine;
             body += "Your password has been changed." + Environment.NewLine;
 
-            await emailSender.SendEmailAsync(user.Email, "Password Changed", body);
+            await emailSender.SendEmailAsync(user.Email, user.FullName, "Password Changed", body);
 
             return Ok();
         }
@@ -273,7 +273,7 @@ namespace AuthorizationServer.Controllers
             body += Environment.NewLine;
             body += Settings.RootUrl + "auth/reset?e=" + user.Email + "&t=" + WebUtility.UrlEncode(token) + Environment.NewLine;
 
-            await emailSender.SendEmailAsync(user.Email, "Password Reset", body);
+            await emailSender.SendEmailAsync(user.Email, user.FullName, "Password Reset", body);
 
             return Ok();
         }
@@ -295,7 +295,7 @@ namespace AuthorizationServer.Controllers
             body += Environment.NewLine;
             body += "Your password has been reset." + Environment.NewLine;
 
-            await emailSender.SendEmailAsync(user.Email, "Password Reset", body);
+            await emailSender.SendEmailAsync(user.Email, user.FullName, "Password Reset", body);
 
             return Ok();
         }
@@ -303,7 +303,7 @@ namespace AuthorizationServer.Controllers
         [HttpPost("[Action]"), AllowAnonymous]
         public async Task<IActionResult> Register([FromBody]RegisterDTO registerDTO)
         {
-            throw new System.Exception("Not Implemented - Register");
+            throw new Exception("Not Implemented - Register");
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

@@ -10,7 +10,7 @@
            maxlength="100" required autofocus="" placeholder="Email address" />
   </div>
 
-  <div class="mt-0 mb-0">
+  <div class="mt-0 mb-0 auth-middle">
     <input type="password" id="newPassword" name="newPassword" [(ngModel)]="reset.newPassword" #newPassword="ngModel"
            class="form-control" [ngClass]="{ 'is-invalid': form.submitted && newPassword.invalid }"
            maxlength="250" required placeholder="New password" />
@@ -28,14 +28,14 @@
       Please correct the following errors:
     </div>
 
-    <div *ngIf="username.invalid" class="ml-3 mt-2">
+    <div *ngIf="username.invalid">
 
       <div *ngIf="username.errors.required">
-        Email is required.
+        <i class="fas fa-exclamation-circle mr-2"></i>Email is required.
       </div>
 
       <div *ngIf="username.errors.maxlength">
-        Email must be at most 100 characters long.
+        <i class="fas fa-exclamation-circle mr-2"></i>Email must be at most 100 characters long.
       </div>
 
     </div>
@@ -43,11 +43,11 @@
     <div *ngIf="newPassword.invalid">
 
       <div *ngIf="newPassword.errors.required">
-        Password is required.
+        <i class="fas fa-exclamation-circle mr-2"></i>Password is required.
       </div>
 
       <div *ngIf="newPassword.errors.maxlength">
-        Password must be at most 250 characters long.
+        <i class="fas fa-exclamation-circle mr-2"></i>Password must be at most 250 characters long.
       </div>
 
     </div>
@@ -55,11 +55,11 @@
     <div *ngIf="confirmPassword.invalid">
 
       <div *ngIf="confirmPassword.errors.required">
-        Confirm password is required.
+        <i class="fas fa-exclamation-circle mr-2"></i>Confirm password is required.
       </div>
 
       <div *ngIf="confirmPassword.errors.maxlength">
-        Confirm password must be at most 250 characters long.
+        <i class="fas fa-exclamation-circle mr-2"></i>Confirm password must be at most 250 characters long.
       </div>
 
     </div>

@@ -28,8 +28,7 @@ namespace WEB.Controllers
             results = results.Include(o => o.Roles);
 
             if (roleId != null) results = results.Where(o => o.Roles.Any(r => r.RoleId == roleId));
-
-
+            throw new Exception("test");
             if (!string.IsNullOrWhiteSpace(q))
                 results = results.Where(o => o.FirstName.Contains(q) || o.LastName.Contains(q));
 

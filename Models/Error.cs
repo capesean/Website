@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -30,10 +31,10 @@ namespace WEB.Models
         public string Method { get; set; }
 
         public Guid ExceptionId { get; set; }
-        public virtual Exception Exception { get; set; }
+        public virtual ErrorException Exception { get; set; }
     }
 
-    public class Exception
+    public class ErrorException
     {
         [Key]
         public Guid Id { get; set; }
@@ -45,6 +46,28 @@ namespace WEB.Models
         public string StackTrace { get; set; }
 
         public Guid? InnerExceptionId { get; set; }
-        public virtual Exception InnerException { get; set; }
+        public virtual ErrorException InnerException { get; set; }
     }
+
+    public class ApiException : ExceptionFilterAttribute, IFilterMetadata
+    {
+        Settings _s;
+        IEmailSender _es;
+        ApplicationDbContext _db;
+
+        public ApiException(Settings settings, IEmailSender emailSender, ApplicationDbContext db)
+        {
+            _s = settings;
+            _es = emailSender;
+            _db = db;
+        }
+
+        public override void OnException(ExceptionContext context)
+        {
+            WEB.Error.Logger.Log(context, _db, _s, _es);
+            base.OnException(context);
+        }
+    }
+
+
 }

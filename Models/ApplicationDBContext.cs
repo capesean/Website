@@ -12,7 +12,7 @@ namespace WEB.Models
     public partial class ApplicationDbContext : IdentityDbContext<User, AppRole, Guid>
     {
         public DbSet<Error> Errors { get; set; }
-        public DbSet<Exception> Exceptions { get; set; }
+        public DbSet<ErrorException> Exceptions { get; set; }
         //public DbSet<Settings> Settings { get; set; }
 
         public ApplicationDbContext()
@@ -75,7 +75,7 @@ namespace WEB.Models
                     Enabled = true
                 };
                 var result = await um.CreateAsync(user, password);
-                if (!result.Succeeded) throw new System.Exception(string.Join(", ", result.Errors));
+                if (!result.Succeeded) throw new Exception(string.Join(", ", result.Errors));
             }
 
             foreach (var role in roles)

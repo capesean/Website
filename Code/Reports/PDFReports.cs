@@ -129,7 +129,7 @@ namespace WEB.Reports.PDF
             }
             else
             {
-                throw new System.Exception("Invalid CellContents type in GetCell: " + contents.GetType().FullName);
+                throw new Exception("Invalid CellContents type in GetCell: " + contents.GetType().FullName);
             }
 
             cell.PaddingTop = 4f; //default: 2
@@ -159,7 +159,7 @@ namespace WEB.Reports.PDF
             {
                 if (exception.Message == "The document has no pages.")
                     //throw new ReportException(GetReportName(), "The report is empty");
-                    throw new System.Exception("The report is empty");
+                    throw new Exception("The report is empty");
                 throw;
             }
 
