@@ -25,7 +25,6 @@ namespace WEB
             Environment = environment;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(options => options.Filters.Add(typeof(ApiException)));
@@ -227,8 +226,6 @@ namespace WEB
 
             app.UseSpa(spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
                 spa.Options.SourcePath = "ClientApp";
                 spa.Options.StartupTimeout = new TimeSpan(0, 5, 0);
 

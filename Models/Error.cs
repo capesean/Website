@@ -10,7 +10,7 @@ namespace WEB.Models
         [Key]
         public Guid Id { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime DateUtc { get; set; }
 
         [Column(TypeName = "varchar(MAX)")]
         public string Message { get; set; }

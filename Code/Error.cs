@@ -61,7 +61,7 @@ namespace WEB.Error
             var error = new Models.Error
             {
                 Id = Guid.NewGuid(),
-                Date = DateTime.UtcNow,
+                DateUtc = DateTime.UtcNow,
                 Message = errorMessage,
                 //EntityValidationErrors = entityValidationError,
                 Url = url,
