@@ -50,9 +50,11 @@ export class UnauthorisedResponseInterceptor implements HttpInterceptor {
                (err) => {
                   if (err.status === 401) {
                      this.router.navigate(['/auth/login']);
+                     return throwError(err);
                   }
                   else if (err.status === 403) {
                      this.router.navigate(['/']);
+                     return throwError(err);
                   } else {
                      //const error = err.message || err.statusText;
                      return throwError(err);

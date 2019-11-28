@@ -18,19 +18,15 @@ namespace WEB.Error
             var url = request.HttpContext.Request.GetEncodedUrl();
             var userName = context.HttpContext.User.Identity.Name;
             var errorMessage = context.Exception.Message;
-            //var form = context.Request.Content.ReadAsStringAsync().Result;
 
             string form = string.Empty;
 
-            if (request.Method == "POST" && string.IsNullOrWhiteSpace(form))
+            if (request.Method == "POST")
             {
-                foreach (var key in request.Form.Keys)
-                    form += key + ":" + request.Form[key] + Environment.NewLine;
-
                 using (StreamReader sr = new StreamReader(request.Body))
                 {
                     if (request.Body.CanSeek) request.Body.Seek(0, SeekOrigin.Begin);
-                    if (request.Body.CanRead) form = sr.ReadToEnd();
+                    if (request.Body.CanRead) form = sr.ReadToEndAsync().Result;
                 }
             }
 

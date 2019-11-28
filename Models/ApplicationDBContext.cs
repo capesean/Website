@@ -50,6 +50,25 @@ namespace WEB.Models
             //AddComputedColumns();
 
             await SeedAsync(um, rm);
+
+            await DeleteErrors(-7);
+        }
+
+        private async Task DeleteErrors(int since)
+        {
+            var cutoff = DateTime.Now.AddDays(since);
+            foreach (var error in Errors.Where(o => o.DateUtc < cutoff))
+            {
+                Guid? exceptionId = error.ExceptionId;
+                while (exceptionId != null)
+                {
+                    var exception = await Exceptions.FirstAsync(o => o.Id == exceptionId);
+                    Entry(exception).State = EntityState.Deleted;
+                    exceptionId = exception.InnerExceptionId;
+                }
+                Entry(error).State = EntityState.Deleted;
+            }
+            await SaveChangesAsync();
         }
 
         internal async Task SeedAsync(UserManager<User> um, RoleManager<AppRole> rm)

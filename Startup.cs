@@ -1,6 +1,7 @@
 using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
@@ -201,6 +202,11 @@ namespace WEB
                 db.InitAsync(um, rm).Wait();
             }
 
+            app.Use(async (context, next) => {
+                context.Request.EnableBuffering();
+                await next();
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -235,7 +241,6 @@ namespace WEB
                 }
             });
         }
-
 
     }
 }
