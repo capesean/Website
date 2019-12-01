@@ -30,13 +30,6 @@ namespace WEB.Models
             return new ApplicationDbContext();
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseLazyLoadingProxies(false);
-
-            base.OnConfiguring(optionsBuilder);
-        }
-
         internal async Task InitAsync(UserManager<User> um, RoleManager<AppRole> rm)
         {
             //// if not using migrations:
@@ -77,6 +70,13 @@ namespace WEB.Models
             foreach (var role in roles)
                 if (!await rm.RoleExistsAsync(role)) await rm.CreateAsync(new AppRole { Name = role });
             await CreateUserAsync(um, "abc@xyz.com", "ABC@xyz!", "Abc", "Xyz", roles);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies(false);
+
+            base.OnConfiguring(optionsBuilder);
         }
 
         private async Task CreateUserAsync(UserManager<User> um, string email, string password, string firstName, string lastName, string[] roles)
