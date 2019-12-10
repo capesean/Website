@@ -38,6 +38,10 @@ body {
   }
 }
 
+#mainContainer {
+  margin-bottom: 5rem;
+}
+
 .form-check {
   padding-top: 5px;
   padding-bottom: 5px;
@@ -253,4 +257,8 @@ table tbody.cdk-drop-list-dragging td {
 
 table tbody tr.cdk-drag-placeholder td {
   opacity: 0.75;
+}
+
+.tab-content {
+  padding-top: 1rem;
 }
