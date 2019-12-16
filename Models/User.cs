@@ -18,6 +18,12 @@ namespace WEB.Models
         [Required]
         public bool Enabled { get; set; }
 
+        [Column(TypeName = "Date")]
+        public DateTime? TestDate { get; set; }
+
+        [Required]
+        public DateTime TestDateTime { get; set; }
+
         public User()
         {
             Id = Guid.NewGuid();

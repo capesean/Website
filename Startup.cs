@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OpenIddict.Abstractions;
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using WEB.Models;
 
@@ -28,7 +30,9 @@ namespace WEB
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options => options.Filters.Add(typeof(ApiException)));
+            services
+                .AddControllers(options => options.Filters.Add(typeof(ApiException)))
+                .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeConverter()));
 
             var settings = Configuration.GetSection("Settings").Get<Settings>();
             settings.RootPath = Environment.ContentRootPath + (Environment.ContentRootPath.EndsWith(@"\") ? "" : @"\");
@@ -202,7 +206,8 @@ namespace WEB
                 db.InitAsync(um, rm).Wait();
             }
 
-            app.Use(async (context, next) => {
+            app.Use(async (context, next) =>
+            {
                 context.Request.EnableBuffering();
                 await next();
             });
@@ -242,5 +247,17 @@ namespace WEB
             });
         }
 
+        public class DateTimeConverter : JsonConverter<DateTime>
+        {
+            public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                return DateTime.Parse(reader.GetString()).ToUniversalTime();
+            }
+
+            public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+            {
+                writer.WriteStringValue(value.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"));
+            }
+        }
     }
 }

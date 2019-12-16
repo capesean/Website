@@ -7,6 +7,8 @@ export class User {
    lastName: string;
    fullName: string;
    enabled: boolean;
+   testDate: Date;
+   testDateTime: Date;
    roles: Role[] = [];
    email: string;
 

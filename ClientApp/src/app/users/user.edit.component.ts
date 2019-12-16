@@ -31,15 +31,19 @@ export class UserEditComponent implements OnInit {
 
    ngOnInit(): void {
 
-      let id = this.route.snapshot.paramMap.get("id");
-      this.isNew = id === "add";
+      this.route.params.subscribe(params => {
 
-      if (!this.isNew) {
+         let id = params["id"];
+         this.isNew = id === "add";
 
-         this.user.id = id;
-         this.loadUser();
+         if (!this.isNew) {
 
-      }
+            this.user.id = id;
+            this.loadUser();
+
+         }
+
+      });
 
    }
 
@@ -100,7 +104,7 @@ export class UserEditComponent implements OnInit {
    }
 
    changeBreadcrumb(): void {
-      this.breadcrumbService.changeBreadcrumb(this.route.snapshot, this.user.firstName != undefined ? this.user.firstName : "(new user)");
+      this.breadcrumbService.changeBreadcrumb(this.route.snapshot, this.user.firstName != undefined ? this.user.firstName.substring(0, 25) : "(new user)");
    }
 
 }

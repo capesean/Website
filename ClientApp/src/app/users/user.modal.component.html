@@ -35,14 +35,14 @@
                 <tr>
                     <th scope="col">First Name</th>
                     <th scope="col">Last Name</th>
-                    <th scope="col" class="text-center fa-col-width" *ngIf="multiple"><i class="fa fa-fw fa-check-square"></i></th>
+                    <th scope="col" class="text-center fa-col-width" *ngIf="multiple"><i class="fa fa-fw clickable" [ngClass]="{ 'fa-check-square': allSelected, 'fa-square': !allSelected }" (click)="toggleAll()"></i></th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let user of users" (click)="select(user)">
                     <td>{{ user.firstName }}</td>
                     <td>{{ user.lastName }}</td>
-                    <td *ngIf="multiple" class="text-center"><i [ngClass]="{ 'fa-check-square-o': vm.isSelected(user), 'fa-square-o': !vm.isSelected(user) }" class="fa fa-fw"></i></td>
+                    <td *ngIf="multiple" class="text-center"><i [ngClass]="{ 'fa-check-square': isSelected(user), 'fa-square': !isSelected(user) }" class="fa fa-fw"></i></td>
                 </tr>
             </tbody>
         </table>
@@ -52,9 +52,9 @@
     </div>
     <div class="modal-footer">
         <div class="w-100">
-            <button type="button" class="btn btn-info" *ngIf="multiple">{{selectedItems.length}} <span *ngIf="selectedItems.length === 1">{{singular}}</span><span *ngIf="selectedItems.length !== 1">{{plural}}</span> selected</button>
+            <button type="button" class="btn btn-info mr-2" *ngIf="multiple">{{selectedItems.length}} <span *ngIf="selectedItems.length === 1">{{singular}}</span><span *ngIf="selectedItems.length !== 1">{{plural}}</span> selected</button>
             <button type="button" class="btn btn-info" (click)="addNew()" target="_blank" *ngIf="showAddNew">Add New</button>
-            <button type="button" class="btn btn-outline-dark" (click)="close()">Close</button>
+            <button type="button" class="btn btn-outline-dark float-right" (click)="close()">Close</button>
             <button type="button" class="btn btn-secondary float-right mr-2" (click)="clear()">Clear</button>
             <button type="button" class="btn btn-secondary float-right mr-2" (click)="selectAll()" *ngIf="multiple">Select All</button>
         </div>

@@ -20,8 +20,8 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
    @Input() user: User;
    @Output() userChange = new EventEmitter<User>();
    @Input() canRemoveFilters: boolean = false;
+   @Input() multiple: boolean = false;
 
-   multiple: boolean = false;
    showAddNew: boolean = false;
    disabled: boolean = false;
    placeholder = "Select a user";

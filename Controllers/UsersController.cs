@@ -16,7 +16,7 @@ namespace WEB.Controllers
         private RoleManager<AppRole> rm;
         private IOptions<PasswordOptions> opts;
 
-        public UsersController(ApplicationDbContext _db, UserManager<User> _um, Settings _settings, RoleManager<AppRole> _rm, IOptions<PasswordOptions> _opts) 
+        public UsersController(ApplicationDbContext _db, UserManager<User> _um, Settings _settings, RoleManager<AppRole> _rm, IOptions<PasswordOptions> _opts)
             : base(_db, _um, _settings) { rm = _rm; opts = _opts; }
 
         [HttpGet]
@@ -28,6 +28,7 @@ namespace WEB.Controllers
             results = results.Include(o => o.Roles);
 
             if (roleId != null) results = results.Where(o => o.Roles.Any(r => r.RoleId == roleId));
+
 
             if (!string.IsNullOrWhiteSpace(q))
                 results = results.Where(o => o.FirstName.Contains(q) || o.LastName.Contains(q));

@@ -21,6 +21,11 @@ namespace WEB.Models
         [Required]
         public bool Enabled { get; set; }
 
+        public DateTime? TestDate { get; set; }
+
+        [Required]
+        public DateTime TestDateTime { get; set; }
+
         public string Email { get; set; }
 
         public IList<string> Roles { get; set; }
@@ -44,6 +49,8 @@ namespace WEB.Models
             userDTO.LastName = user.LastName;
             userDTO.FullName = user.FullName;
             userDTO.Enabled = user.Enabled;
+            userDTO.TestDate = user.TestDate;
+            userDTO.TestDateTime = user.TestDateTime;
             userDTO.Email = user.Email;
             userDTO.Roles = roles;
 
@@ -57,6 +64,8 @@ namespace WEB.Models
             user.FirstName = userDTO.FirstName;
             user.LastName = userDTO.LastName;
             user.Enabled = userDTO.Enabled;
+            user.TestDate = userDTO.TestDate;
+            user.TestDateTime = userDTO.TestDateTime;
         }
     }
 }
