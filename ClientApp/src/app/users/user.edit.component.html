@@ -36,11 +36,11 @@
                     <input type="text" id="firstName" name="firstName" [(ngModel)]="user.firstName" #firstName="ngModel" class="form-control" required (ngModelChange)="changeBreadcrumb()" maxlength="50" />
 
                     <div *ngIf="firstName.errors?.required" class="invalid-feedback">
-                        First Name is required
+                       First Name is required
                     </div>
 
                     <div *ngIf="firstName.errors?.maxlength" class="invalid-feedback">
-                        First Name must be at most 50 characters long
+                       First Name must be at most 50 characters long
                     </div>
 
                 </div>
@@ -56,11 +56,11 @@
                     <input type="text" id="lastName" name="lastName" [(ngModel)]="user.lastName" #lastName="ngModel" class="form-control" required maxlength="50" />
 
                     <div *ngIf="lastName.errors?.required" class="invalid-feedback">
-                        Last Name is required
+                       Last Name is required
                     </div>
 
                     <div *ngIf="lastName.errors?.maxlength" class="invalid-feedback">
-                        Last Name must be at most 50 characters long
+                       Last Name must be at most 50 characters long
                     </div>
 
                 </div>
@@ -74,10 +74,10 @@
                     </label>
 
                     <div class="form-check">
-                        <input type="checkbox" id="enabled" name="enabled" [(ngModel)]="user.enabled" #enabled="ngModel" class="form-check-input" />
-                        <label class="form-check-label" for="enabled">
-                            Enabled
-                        </label>
+                       <input type="checkbox" id="enabled" name="enabled" [(ngModel)]="user.enabled" #enabled="ngModel" class="form-check-input" />
+                       <label class="form-check-label" for="enabled">
+                          Enabled
+                       </label>
                     </div>
 
                 </div>
@@ -91,11 +91,10 @@
                     </label>
 
                     <div class="input-group">
-                        <input class="form-control" placeholder="yyyy-mm-dd" required
-                               name="testDate" #testDate="ngModel" [(ngModel)]="user.testDate" ngbDatepicker #dptestDate="ngbDatepicker">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary calendar" (click)="dptestDate.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
-                        </div>
+                       <input type="text" id="testDate" name="testDate" [(ngModel)]="user.testDate" #testDate="ngModel" class="form-control" placeholder="yyyy-mm-dd" ngbDatepicker #dpTestDate="ngbDatepicker" />
+                       <div class="input-group-append">
+                          <button class="btn btn-outline-secondary calendar" (click)="dpTestDate.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
+                       </div>
                     </div>
 
                 </div>
@@ -109,11 +108,14 @@
                     </label>
 
                     <div class="input-group">
-                        <input class="form-control" placeholder="yyyy-mm-dd" required
-                               name="testDateTime" #testDateTime="ngModel" [(ngModel)]="user.testDateTime" ngbDatepicker #dpTestDateTime="ngbDatepicker">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary calendar" (click)="dpTestDateTime.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
-                        </div>
+                       <input type="text" id="testDateTime" name="testDateTime" [(ngModel)]="user.testDateTime" #testDateTime="ngModel" class="form-control" required placeholder="yyyy-mm-dd" ngbDatepicker #dpTestDateTime="ngbDatepicker" />
+                       <div class="input-group-append">
+                          <button class="btn btn-outline-secondary calendar" (click)="dpTestDateTime.toggle()" type="button"><i class="fas fa-calendar-alt"></i></button>
+                       </div>
+                    </div>
+
+                    <div *ngIf="testDateTime.errors?.required" class="invalid-feedback">
+                       TestDateTime is required
                     </div>
 
                 </div>

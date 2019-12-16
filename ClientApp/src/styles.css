@@ -1,264 +1,270 @@
 /* these styles will apply to auth/login AND main app */
 @font-face {
-  font-family: 'Roboto';
-  src: url('/fonts/Roboto-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'Roboto';
+    src: url('/fonts/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 
 html {
-  overflow-y: scroll;
-  font-size: 10.5pt;
+    overflow-y: scroll;
+    font-size: 10.5pt;
 }
 
 body {
-  font-family: Roboto;
+    font-family: Roboto;
 }
 
-  body.login {
-    display: -ms-flexbox;
-    display: -webkit-box;
-    display: flex;
-    -ms-flex-align: center;
-    -ms-flex-pack: center;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
-    background-color: #f5f5f5;
-  }
+    body.login {
+        display: -ms-flexbox;
+        display: -webkit-box;
+        display: flex;
+        -ms-flex-align: center;
+        -ms-flex-pack: center;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
+    }
 
 @media (min-width: 576px) {
-  .container {
-    max-width: 100%;
-    padding-left: 30px;
-    padding-right: 30px;
-  }
+    .container {
+        max-width: 100%;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
 }
 
 #mainContainer {
-  margin-bottom: 5rem;
+    margin-bottom: 5rem;
 }
 
 .form-check {
-  padding-top: 5px;
-  padding-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .ui-breadcrumb {
-  border: none !important;
-  background-color: white !important;
-  font-size: small !important;
-  padding: 0 !important;
-  opacity: 0.80 !important;
+    border: none !important;
+    background-color: white !important;
+    font-size: small !important;
+    padding: 0 !important;
+    opacity: 0.80 !important;
 }
 
-  .ui-breadcrumb .ui-breadcrumb-chevron {
-    margin: 5px !important;
-  }
+    .ui-breadcrumb .ui-breadcrumb-chevron {
+        margin: 5px !important;
+    }
 
 .app-select .input-group:not(.disabled) input.form-control {
-  background-color: white !important;
-  cursor: pointer;
+    background-color: white !important;
+    cursor: pointer;
 }
 
 fieldset[disabled] .app-select .input-group input.form-control {
-  cursor: default !important;
-  background-color: #e9ecef !important;
+    cursor: default !important;
+    background-color: #e9ecef !important;
 }
 
 .app-select .input-group.disabled .btn {
-  cursor: default;
+    cursor: default;
 }
 
 .was-validated .app-select.ng-invalid input.form-control {
-  border-color: #dc3545;
+    border-color: #dc3545;
 }
 
 .was-validated .form-group.is-invalid .app-select .btn {
-  background-color: #dc3545;
-  border-color: #dc3545;
+    background-color: #dc3545;
+    border-color: #dc3545;
 }
 
 .was-validated .app-select.ng-invalid ~ .invalid-feedback {
-  display: block;
+    display: block;
 }
 
 /*need smaller margins in modal else scrollbar shows*/
 .modal-body .row {
-  margin-right: -14px;
-  margin-left: -14px;
+    margin-right: -14px;
+    margin-left: -14px;
 }
 
 .toast-container * {
-  font-size: small;
+    font-size: small;
 }
 
 .table-bordered thead td, .table-bordered thead th {
-  border-color: #464646;
-  background-color: #a2a2a2;
-  font-weight: normal;
-  color: white;
-  border-bottom-width: 1px;
+    border-color: #464646;
+    background-color: #a2a2a2;
+    font-weight: normal;
+    color: white;
+    border-bottom-width: 1px;
 }
 
 table.row-navigation tbody td {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .table-hover tbody tr:hover:not(.table-danger):not(.table-success) > td {
-  background-color: #cbddff;
-  border: solid 1px #9dbfff !important;
-  border-top: double 1px #9dbfff !important;
+    background-color: #cbddff;
+    border: solid 1px #9dbfff !important;
+    border-top: double 1px #9dbfff !important;
 }
 
 .table-hover tbody tr.table-danger:hover > td {
-  border: solid 1px #ba4447 !important;
-  border-top: double 1px #ba4447 !important;
+    border: solid 1px #ba4447 !important;
+    border-top: double 1px #ba4447 !important;
 }
 
 .table-hover tbody tr.table-success:hover > td {
-  border: solid 1px #419641 !important;
-  border-top: double 1px #419641 !important;
+    border: solid 1px #419641 !important;
+    border-top: double 1px #419641 !important;
 }
 
 .was-validated .form-control:valid {
-  background-image: none !important;
-  padding-right: 0.75rem;
-  border-color: #ced4da !important;
+    background-image: none !important;
+    padding-right: 0.75rem;
+    border-color: #ced4da !important;
 }
 
 .was-validated .form-control:invalid {
-  background-image: none !important;
-  padding-right: 0.75rem;
+    background-image: none !important;
+    padding-right: 0.75rem;
 }
 
 .form-check-input:valid ~ .form-check-label {
-  color: #212529 !important;
+    color: #212529 !important;
 }
 
 .fa-col-width {
-  width: 30px;
+    width: 30px;
 }
 
 .modal-header {
-  background-color: #f9f9f9 !important;
+    background-color: #f9f9f9 !important;
 }
 
 .modal-header, .modal-footer {
-  padding-top: 0.5rem !important;
-  padding-bottom: 0.5rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
 }
 
 .modal-content {
-  animation-name: modal;
-  animation-duration: 0.3s;
+    animation-name: modal;
+    animation-duration: 0.3s;
 }
 
 @keyframes modal {
-  0% {
-    transform: scale(0.5)
-  }
+    0% {
+        transform: scale(0.5)
+    }
 
-  100% {
-    transform: scale(1)
-  }
+    100% {
+        transform: scale(1)
+    }
 }
 
 #spinner.backdrop {
-  animation-name: loading;
-  animation-duration: 1s;
+    animation-name: loading;
+    animation-duration: 1s;
 }
 
 @keyframes loading {
-  from {
-    opacity: 0;
-  }
+    from {
+        opacity: 0;
+    }
 
-  to {
-    opacity: 0.7;
-  }
+    to {
+        opacity: 0.7;
+    }
 }
 
 ::-webkit-input-placeholder {
-  color: #999999 !important;
+    color: #999999 !important;
 }
 
 ::-moz-placeholder {
-  color: #999999 !important;
+    color: #999999 !important;
 }
 
 ::-ms-input-placeholder {
-  color: #999999 !important;
+    color: #999999 !important;
 }
 
 ::-moz-placeholder {
-  color: #999999 !important;
+    color: #999999 !important;
 }
 
 ::-webkit-input-placeholder {
-  color: #999999 !important;
+    color: #999999 !important;
 }
 
 hr {
-  border-style: dashed;
-  margin-top: 2rem;
-  margin-bottom: 1.5rem;
+    border-style: dashed;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 fieldset.group {
-  margin-bottom: 20px;
-  border: dotted 1px #888;
-  padding: 5px 20px 15px;
-  background-color: #f8f8f8;
+    margin-bottom: 20px;
+    border: dotted 1px #888;
+    padding: 5px 20px 15px;
+    background-color: #f8f8f8;
 }
 
-  fieldset.group legend {
-    display: block;
-    width: auto;
-    margin-bottom: 0;
-    font-size: 0.75rem;
-    line-height: inherit;
-    color: #999;
-    border: solid 1px #aaa;
-    border-radius: 8px;
-    background: white;
-    padding: 2px 7px;
-    font-weight: normal;
-  }
+    fieldset.group legend {
+        display: block;
+        width: auto;
+        margin-bottom: 0;
+        font-size: 0.75rem;
+        line-height: inherit;
+        color: #999;
+        border: solid 1px #aaa;
+        border-radius: 8px;
+        background: white;
+        padding: 2px 7px;
+        font-weight: normal;
+    }
 
 fieldset .form-group > label:not(.radio-inline) {
-  font-size: 0.75rem;
-  line-height: normal;
-  color: #999;
-  font-weight: normal;
-  width: 100%;
-  margin-bottom: 0;
+    font-size: 0.75rem;
+    line-height: normal;
+    color: #999;
+    font-weight: normal;
+    width: 100%;
+    margin-bottom: 0;
 }
 
 fieldset.form-horizontal span.control-label {
-  display: inline-block;
+    display: inline-block;
 }
 
 .pagination li a:focus {
-  outline: 0 !important;
-  box-shadow: none !important;
+    outline: 0 !important;
+    box-shadow: none !important;
 }
 
 .cdk-drag-handle {
-  cursor: grab !important;
+    cursor: grab !important;
 }
 
 table tbody.cdk-drop-list-dragging td {
-  cursor: grabbing !important;
+    cursor: grabbing !important;
 }
 
 table tbody tr.cdk-drag-placeholder td {
-  opacity: 0.75;
+    opacity: 0.75;
 }
 
 .tab-content {
-  padding-top: 1rem;
+    padding-top: 1rem;
+}
+
+ngb-datepicker .is-valid, .was-validated ngb-datepicker :valid {
+    border-color: inherit !important;
+    padding-right: inherit !important;
+    background: inherit !important;
 }
