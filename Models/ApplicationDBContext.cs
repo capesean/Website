@@ -52,6 +52,7 @@ namespace WEB.Models
             var cutoff = DateTime.Now.AddDays(since);
             foreach (var error in Errors.Where(o => o.DateUtc < cutoff))
             {
+                Entry(error).State = EntityState.Deleted;
                 Guid? exceptionId = error.ExceptionId;
                 while (exceptionId != null)
                 {
@@ -59,7 +60,6 @@ namespace WEB.Models
                     Entry(exception).State = EntityState.Deleted;
                     exceptionId = exception.InnerExceptionId;
                 }
-                Entry(error).State = EntityState.Deleted;
             }
             await SaveChangesAsync();
         }
