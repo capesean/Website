@@ -22,6 +22,8 @@ namespace WEB
 
         public async Task SendEmailAsync(string toEmail, string toName, string subject, string bodyText, string bodyHtml = null)
         {
+            if (!_settings.EmailSettings.SendEmails) return;
+
             var html = System.IO.File.ReadAllText(System.IO.Path.Join(_settings.RootPath, "wwwroot/templates/email.html"));
             html = html.Replace("{rootUrl}", _settings.RootUrl);
             html = html.Replace("{title}", subject);
