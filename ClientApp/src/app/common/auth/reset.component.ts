@@ -22,10 +22,8 @@ export class ResetComponent implements OnInit {
    ) { }
 
    ngOnInit() {
-      this.route.queryParams.subscribe(params => {
-         this.reset.username = params['e'];
-         this.reset.token = params['t'];
-      });
+       this.reset.username = this.route.snapshot.queryParams.e;
+       this.reset.token = this.route.snapshot.queryParams.t;
    }
 
    submit(form: NgForm) {

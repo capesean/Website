@@ -1,3 +1,9 @@
+@media (min-width: 576px) {
+    header nav .dropdown:hover > .dropdown-menu {
+        display: block;
+    }
+}
+
 /* these styles will apply to auth/login AND main app */
 @font-face {
     font-family: 'Roboto';

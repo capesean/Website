@@ -3,25 +3,25 @@
       <nav *ngIf="pagerHeaders && pagerHeaders.pageSize > 0">
          <ul class="pagination pagination-sm">
             <li class="page-item" (click)="changePage(0)" [ngClass]="{ 'disabled': pagerHeaders.pageIndex === 0 }">
-               <a class="page-link" [routerLink]="">
+               <a class="page-link" [routerLink]="" queryParamsHandling="preserve">
                   <span>&laquo;</span>
                </a>
             </li>
 
-            <li class="page-item hidden-sm" *ngIf="pagerHeaders.pageIndex - 3 > 0"><a (click)="changePage(pagerHeaders.pageIndex - 4)" class="page-link" [routerLink]="">{{pagerHeaders.pageIndex - 3}}</a></li>
-            <li class="page-item hidden-sm" *ngIf="pagerHeaders.pageIndex - 2 > 0"><a (click)="changePage(pagerHeaders.pageIndex - 3)" class="page-link" [routerLink]="">{{pagerHeaders.pageIndex - 2}}</a></li>
-            <li class="page-item" *ngIf="pagerHeaders.pageIndex - 1 > 0"><a (click)="changePage(pagerHeaders.pageIndex - 2)" class="page-link" [routerLink]="">{{pagerHeaders.pageIndex - 1}}</a></li>
-            <li class="page-item" *ngIf="pagerHeaders.pageIndex > 0"><a (click)="changePage(pagerHeaders.pageIndex - 1)" class="page-link" [routerLink]="">{{pagerHeaders.pageIndex}}</a></li>
+            <li class="page-item hidden-sm" *ngIf="pagerHeaders.pageIndex - 3 > 0"><a (click)="changePage(pagerHeaders.pageIndex - 4)" class="page-link" [routerLink]="" queryParamsHandling="preserve">{{pagerHeaders.pageIndex - 3}}</a></li>
+            <li class="page-item hidden-sm" *ngIf="pagerHeaders.pageIndex - 2 > 0"><a (click)="changePage(pagerHeaders.pageIndex - 3)" class="page-link" [routerLink]="" queryParamsHandling="preserve">{{pagerHeaders.pageIndex - 2}}</a></li>
+            <li class="page-item" *ngIf="pagerHeaders.pageIndex - 1 > 0"><a (click)="changePage(pagerHeaders.pageIndex - 2)" class="page-link" [routerLink]="" queryParamsHandling="preserve">{{pagerHeaders.pageIndex - 1}}</a></li>
+            <li class="page-item" *ngIf="pagerHeaders.pageIndex > 0"><a (click)="changePage(pagerHeaders.pageIndex - 1)" class="page-link" [routerLink]="" queryParamsHandling="preserve">{{pagerHeaders.pageIndex}}</a></li>
 
-            <li class="page-item active"><a class="page-link" [routerLink]="">{{pagerHeaders.pageIndex + 1}}</a></li>
+            <li class="page-item active"><a class="page-link" [routerLink]="" queryParamsHandling="preserve">{{pagerHeaders.pageIndex + 1}}</a></li>
 
-            <li class="page-item" *ngIf="pagerHeaders.pageIndex + 1 < pagerHeaders.totalPages"><a (click)="changePage(pagerHeaders.pageIndex + 1)" class="page-link" [routerLink]="">{{pagerHeaders.pageIndex + 2}}</a></li>
-            <li class="page-item" *ngIf="pagerHeaders.pageIndex + 2 < pagerHeaders.totalPages"><a (click)="changePage(pagerHeaders.pageIndex + 2)" class="page-link" [routerLink]="">{{pagerHeaders.pageIndex + 3}}</a></li>
-            <li class="page-item hidden-sm" *ngIf="pagerHeaders.pageIndex + 3 < pagerHeaders.totalPages"><a (click)="changePage(pagerHeaders.pageIndex + 3)" class="page-link" [routerLink]="">{{pagerHeaders.pageIndex + 4}}</a></li>
-            <li class="page-item hidden-sm" *ngIf="pagerHeaders.pageIndex + 4 < pagerHeaders.totalPages"><a (click)="changePage(pagerHeaders.pageIndex + 4)" class="page-link" [routerLink]="">{{pagerHeaders.pageIndex + 5}}</a></li>
+            <li class="page-item" *ngIf="pagerHeaders.pageIndex + 1 < pagerHeaders.totalPages"><a (click)="changePage(pagerHeaders.pageIndex + 1)" class="page-link" [routerLink]="" queryParamsHandling="preserve">{{pagerHeaders.pageIndex + 2}}</a></li>
+            <li class="page-item" *ngIf="pagerHeaders.pageIndex + 2 < pagerHeaders.totalPages"><a (click)="changePage(pagerHeaders.pageIndex + 2)" class="page-link" [routerLink]="" queryParamsHandling="preserve">{{pagerHeaders.pageIndex + 3}}</a></li>
+            <li class="page-item hidden-sm" *ngIf="pagerHeaders.pageIndex + 3 < pagerHeaders.totalPages"><a (click)="changePage(pagerHeaders.pageIndex + 3)" class="page-link" [routerLink]="" queryParamsHandling="preserve">{{pagerHeaders.pageIndex + 4}}</a></li>
+            <li class="page-item hidden-sm" *ngIf="pagerHeaders.pageIndex + 4 < pagerHeaders.totalPages"><a (click)="changePage(pagerHeaders.pageIndex + 4)" class="page-link" [routerLink]="" queryParamsHandling="preserve">{{pagerHeaders.pageIndex + 5}}</a></li>
 
             <li class="page-item" (click)="changePage(pagerHeaders.totalPages - 1)" [ngClass]="{ 'disabled': pagerHeaders.pageIndex >= pagerHeaders.totalPages - 1 }">
-               <a class="page-link" [routerLink]="">
+               <a class="page-link" [routerLink]="" queryParamsHandling="preserve">
                   <span>&raquo;</span>
                </a>
             </li>

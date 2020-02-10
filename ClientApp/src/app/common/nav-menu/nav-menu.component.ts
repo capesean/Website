@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
-import { JwtTokenModel, ProfileModel } from '../auth/auth.models';
+import { ProfileModel } from '../auth/auth.models';
 import { Roles } from '../models/roles.model';
 
 @Component({
@@ -33,10 +33,6 @@ export class NavMenuComponent implements OnInit {
       this.authService.logout();
       this.toastr.success("You have been logged out successfully", "Log Out");
       this.router.navigate(["/auth/login"]);
-   }
-
-   collapse() {
-      this.isExpanded = false;
    }
 
    toggle() {
