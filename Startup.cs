@@ -21,6 +21,7 @@ namespace WEB
     {
         public IConfiguration Configuration { get; }
         private IWebHostEnvironment Environment { get; }
+        private DbContextOptions options { get; set; }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
@@ -31,7 +32,7 @@ namespace WEB
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddControllers(options => options.Filters.Add(typeof(ApiException)))
+                .AddControllers(options => options.Filters.Add(typeof(ApiExceptionAttribute)))
                 .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new DateTimeConverter()));
 
             var settings = Configuration.GetSection("Settings").Get<Settings>();
@@ -48,6 +49,11 @@ namespace WEB
                 // Note: use the generic overload if you need
                 // to replace the default OpenIddict entities.
                 options.UseOpenIddict();
+
+                services.AddSingleton(options.Options);
+
+                // store for seeding
+                this.options = options.Options;
             });
 
             services.AddSpaStaticFiles(configuration =>

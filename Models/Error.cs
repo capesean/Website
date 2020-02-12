@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -49,22 +50,22 @@ namespace WEB.Models
         public virtual ErrorException InnerException { get; set; }
     }
 
-    public class ApiException : ExceptionFilterAttribute, IFilterMetadata
+    public class ApiExceptionAttribute : ExceptionFilterAttribute, IFilterMetadata
     {
         Settings _s;
         IEmailSender _es;
-        ApplicationDbContext _db;
+        DbContextOptions _opts;
 
-        public ApiException(Settings settings, IEmailSender emailSender, ApplicationDbContext db)
+        public ApiExceptionAttribute(Settings settings, IEmailSender emailSender, DbContextOptions options)
         {
             _s = settings;
             _es = emailSender;
-            _db = db;
+            _opts = options;
         }
 
         public override void OnException(ExceptionContext context)
         {
-            WEB.Error.Logger.Log(context, _db, _s, _es);
+            WEB.Error.Logger.Log(context, _s, _es, _opts);
             base.OnException(context);
         }
     }

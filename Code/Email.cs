@@ -8,7 +8,7 @@ namespace WEB
 {
     public interface IEmailSender
     {
-        Task SendEmailAsync(string toEmail, string toName, string subject, string bodyText, string bodyHtml = null);
+        Task SendEmailAsync(string toEmail, string toName, string subject, string bodyText, string bodyHtml = null, bool isErrorEmail = false);
     }
 
     public class EmailSender : IEmailSender
@@ -20,9 +20,10 @@ namespace WEB
             _settings = settings;
         }
 
-        public async Task SendEmailAsync(string toEmail, string toName, string subject, string bodyText, string bodyHtml = null)
+        public async Task SendEmailAsync(string toEmail, string toName, string subject, string bodyText, string bodyHtml = null, bool isErrorEmail = false)
         {
-            if (!_settings.EmailSettings.SendEmails) return;
+            if (!isErrorEmail && !_settings.EmailSettings.SendEmails) return;
+            if (isErrorEmail && !_settings.EmailSettings.SendErrorEmails) return;
 
             var html = System.IO.File.ReadAllText(System.IO.Path.Join(_settings.RootPath, "wwwroot/templates/email.html"));
             html = html.Replace("{rootUrl}", _settings.RootUrl);

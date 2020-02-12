@@ -17,5 +17,6 @@
         public string SubstitutionEmailAddress { get; set; }
         public string EmailToErrors { get; set; }
         public bool SendEmails { get; set; }
+        public bool SendErrorEmails { get; set; }
     }
 }

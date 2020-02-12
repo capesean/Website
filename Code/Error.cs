@@ -9,7 +9,7 @@ namespace WEB.Error
 {
     public static class Logger
     {
-        public static void Log(ExceptionContext context, ApplicationDbContext db, Settings settings, IEmailSender emailSender)
+        public static void Log(ExceptionContext context, Settings settings, IEmailSender emailSender, DbContextOptions options)
         {
             if (context.Exception == null) return;
             if (context.Exception.Message == "A task was canceled.") return;
@@ -70,17 +70,22 @@ namespace WEB.Error
 
             try
             {
-                db.Entry(error).State = EntityState.Added;
-                var exception = error.Exception;
-                while (exception != null)
+                // use a new context to avoid SaveChanges saving pending commits on another context
+                using (var db = new ApplicationDbContext(options))
                 {
-                    db.Entry(exception).State = EntityState.Added;
-                    exception = exception.InnerException;
+                    db.Entry(error).State = EntityState.Added;
+                    var exception = error.Exception;
+                    while (exception != null)
+                    {
+                        db.Entry(exception).State = EntityState.Added;
+                        exception = exception.InnerException;
+                    }
+                    db.SaveChanges();
                 }
-                db.SaveChanges();
             }
-            catch(Exception e) {
-            
+            catch (Exception e)
+            {
+
             }
 
 
@@ -88,7 +93,7 @@ namespace WEB.Error
             {
                 var body = string.Empty;
                 body += "URL: " + url + Environment.NewLine;
-                body += "DATE: " + DateTime.Now.ToString("dd MMMM yyyy, HH:mm:ss") + Environment.NewLine;
+                body += "DATE: " + DateTime.UtcNow.ToString("dd MMMM yyyy, HH:mm:ss") + Environment.NewLine;
                 body += "USER: " + userName + Environment.NewLine;
                 body += "MESSAGE: " + errorMessage + Environment.NewLine;// + Environment.NewLine + entityValidationError;
                 body += Environment.NewLine;
@@ -105,7 +110,7 @@ namespace WEB.Error
 
                 try
                 {
-                    emailSender.SendEmailAsync(settings.EmailSettings.EmailToErrors, settings.EmailSettings.EmailToErrors, settings.SiteName + " Error", body).Wait();
+                    emailSender.SendEmailAsync(settings.EmailSettings.EmailToErrors, settings.EmailSettings.EmailToErrors, settings.SiteName + " Error", body, isErrorEmail: true).Wait();
                 }
                 catch { }
             }

@@ -21,6 +21,17 @@ export class ErrorService {
             else if (httpError.status === 400) {
                 if (typeof err.error === "object") {
                     message = "";
+                    if (err.error instanceof Blob) {
+                        var reader = new FileReader();
+                        var that = this;
+                        reader.onload = function () {
+                            message = <string>reader.result;
+                            console.log(err);
+                            that.toastr.error(message, title);
+                        }
+                        reader.readAsText(err.error);
+                        return;
+                    }
                     for (var key in err.error) {
                         message += err.error[key] + "<br/>";
                     }
