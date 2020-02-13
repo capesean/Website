@@ -9,32 +9,32 @@ import { SearchQuery, PagingOptions } from '../models/http.model';
 @Injectable({ providedIn: 'root' })
 export class UserService extends SearchQuery {
 
-   constructor(private http: HttpClient) {
-      super();
-   }
+    constructor(private http: HttpClient) {
+        super();
+    }
 
-   search(params: UserSearchOptions): Observable<UserSearchResponse> {
-      const queryParams: HttpParams = this.buildQueryParams(params);
-      return this.http.get(`${environment.baseApiUrl}users`, { params: queryParams, observe: 'response' })
-         .pipe(
-            map(response => {
-               const headers = <PagingOptions>JSON.parse(response.headers.get("x-pagination"))
-               const users = <User[]>response.body;
-               return { users: users, headers: headers };
-            })
-         );
-   }
+    search(params: UserSearchOptions): Observable<UserSearchResponse> {
+        const queryParams: HttpParams = this.buildQueryParams(params);
+        return this.http.get(`${environment.baseApiUrl}users`, { params: queryParams, observe: 'response' })
+            .pipe(
+                map(response => {
+                    const headers = <PagingOptions>JSON.parse(response.headers.get("x-pagination"))
+                    const users = <User[]>response.body;
+                    return { users: users, headers: headers };
+                })
+            );
+    }
 
-   get(id: string): Observable<User> {
-      return this.http.get<User>(`${environment.baseApiUrl}users/${id}`);
-   }
+    get(id: string): Observable<User> {
+        return this.http.get<User>(`${environment.baseApiUrl}users/${id}`);
+    }
 
-   save(user: User): Observable<User> {
-      return this.http.post<User>(`${environment.baseApiUrl}users/${user.id}`, user);
-   }
+    save(user: User): Observable<User> {
+        return this.http.post<User>(`${environment.baseApiUrl}users/${user.id}`, user);
+    }
 
-   delete(id: string): Observable<void> {
-      return this.http.delete<void>(`${environment.baseApiUrl}users/${id}`);
-   }
+    delete(id: string): Observable<void> {
+        return this.http.delete<void>(`${environment.baseApiUrl}users/${id}`);
+    }
 
 }

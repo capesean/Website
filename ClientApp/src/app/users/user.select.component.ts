@@ -5,69 +5,77 @@ import { User } from '../common/models/user.model';
 import { Enum } from '../common/models/enums.model';
 
 @Component({
-   selector: 'user-select',
-   templateUrl: './user.select.component.html',
-   providers: [{
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => UserSelectComponent),
-      multi: true
-   }],
-   host: { 'class': 'app-select' }
+    selector: 'user-select',
+    templateUrl: './user.select.component.html',
+    providers: [{
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: forwardRef(() => UserSelectComponent),
+        multi: true
+    }],
+    host: { 'class': 'app-select' }
 })
 export class UserSelectComponent implements OnInit, ControlValueAccessor {
 
-   @Input() id: string;
-   @Input() user: User;
-   @Output() userChange = new EventEmitter<User>();
-   @Input() canRemoveFilters: boolean = false;
-   @Input() multiple: boolean = false;
+    @Input() id: string | string[];
+    @Input() user: User | User[];
+    @Output() userChange = new EventEmitter<User | User[]>();
+    @Input() canRemoveFilters: boolean = false;
+    @Input() multiple: boolean = false;
 
-   showAddNew: boolean = false;
-   disabled: boolean = false;
-   placeholder = "Select a user";
+    showAddNew: boolean = false;
+    disabled: boolean = false;
+    placeholder = this.multiple ? "Select users" : "Select an user";
 
-   @ViewChild('modal', { static: false }) modal: UserModalComponent;
+    @ViewChild('modal', { static: false }) modal: UserModalComponent;
 
-   constructor(
-   ) {
-   }
+    constructor(
+    ) {
+    }
 
-   ngOnInit(): void {
-   }
+    ngOnInit(): void {
+    }
 
-   propagateChange = (_: any) => { };
+    propagateChange = (_: any) => { };
 
-   writeValue(id: string): void {
-      if (id !== undefined) {
-         this.id = id;
-         this.propagateChange(this.id);
-      }
-   }
+    writeValue(id: string | string[]): void {
+        if (id !== undefined) {
+            this.id = id;
+            this.propagateChange(this.id);
+        }
+    }
 
-   registerOnChange(fn: any): void {
-      this.propagateChange = fn;
-   }
+    registerOnChange(fn: any): void {
+        this.propagateChange = fn;
+    }
 
-   registerOnTouched(fn: any): void {
-   }
+    registerOnTouched(fn: any): void {
+    }
 
-   setDisabledState?(isDisabled: boolean): void {
-      this.disabled = isDisabled;
-   }
+    setDisabledState?(isDisabled: boolean): void {
+        this.disabled = isDisabled;
+    }
 
-   change(user: User) {
-      if (this.disabled) return;
-      this.user = user;
-      this.userChange.emit(user);
-      this.writeValue(user ? user.id : null);
-   }
+    change(user: User | User[]) {
+        if (this.disabled) return;
+        this.user = user;
+        this.userChange.emit(user);
+        if (this.multiple)
+            this.writeValue(user ? (<User[]><unknown>user).map(o => o.id) : null);
+        else
+            this.writeValue(user ? (<User>user).id : null);
+    }
 
-   getLabel() {
-      return this.user ? this.user.firstName : "";
-   }
+    getLabel() {
+        if (this.multiple) {
+            let label = "";
+            (<User[]><unknown>this.user).forEach(user => label += (label == "" ? "" : ", ") + user.firstName);
+            return label;
+        }
+        return this.user ? (<User>this.user).firstName : "";
+    }
 
-   openModal() {
-      if (this.disabled) return;
-      this.modal.open();
-   }
+    openModal() {
+        if (this.disabled) return;
+        this.modal.open();
+    }
 }

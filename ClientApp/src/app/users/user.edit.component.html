@@ -36,11 +36,11 @@
                     <input type="text" id="firstName" name="firstName" [(ngModel)]="user.firstName" #firstName="ngModel" class="form-control" required (ngModelChange)="changeBreadcrumb()" maxlength="50" />
 
                     <div *ngIf="firstName.errors?.required" class="invalid-feedback">
-                       First Name is required
+                        First Name is required
                     </div>
 
                     <div *ngIf="firstName.errors?.maxlength" class="invalid-feedback">
-                       First Name must be at most 50 characters long
+                        First Name must be at most 50 characters long
                     </div>
 
                 </div>
@@ -56,11 +56,11 @@
                     <input type="text" id="lastName" name="lastName" [(ngModel)]="user.lastName" #lastName="ngModel" class="form-control" required maxlength="50" />
 
                     <div *ngIf="lastName.errors?.required" class="invalid-feedback">
-                       Last Name is required
+                        Last Name is required
                     </div>
 
                     <div *ngIf="lastName.errors?.maxlength" class="invalid-feedback">
-                       Last Name must be at most 50 characters long
+                        Last Name must be at most 50 characters long
                     </div>
 
                 </div>
@@ -115,7 +115,7 @@
                     </div>
 
                     <div *ngIf="testDateTime.errors?.required" class="invalid-feedback">
-                       TestDateTime is required
+                        TestDateTime is required
                     </div>
 
                 </div>

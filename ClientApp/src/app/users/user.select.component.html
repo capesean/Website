@@ -1,7 +1,7 @@
 <div class="input-group" [ngClass]="{ 'disabled': disabled }">
-    <input name="user" id="user" placeholder="{{placeholder}}" (click)="openModal()" type="text"
+    <input placeholder="{{placeholder}}" (click)="openModal()" type="text"
                    class="form-control" readonly="readonly" value="{{getLabel()}}" [disabled]="disabled" />
-    <input type="hidden" name="id" id="id" [(ngModel)]="id" />
+    <input type="hidden" [(ngModel)]="id" />
     <div class="input-group-append">
         <button type="button" class="btn btn-secondary" (click)="openModal()">
             <i class="fa fa-search"></i>
@@ -9,4 +9,4 @@
     </div>
 </div>
 
-<user-modal #modal (change)="change($event)" [canRemoveFilters]="canRemoveFilters"></user-modal>
+<user-modal #modal (change)="change($event)" [multiple]="multiple" [canRemoveFilters]="canRemoveFilters"></user-modal>

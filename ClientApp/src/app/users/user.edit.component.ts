@@ -8,103 +8,116 @@ import { ErrorService } from '../common/services/error.service';
 import { User } from '../common/models/user.model';
 import { UserService } from '../common/services/user.service';
 import { Roles } from '../common/models/roles.model';
+import { AuthService } from '../common/auth/auth.service';
+import { ProfileModel } from '../common/auth/auth.models';
 
 @Component({
-   selector: 'user-edit',
-   templateUrl: './user.edit.component.html'
+    selector: 'user-edit',
+    templateUrl: './user.edit.component.html'
 })
 export class UserEditComponent implements OnInit {
 
-   public user: User = new User();
-   public isNew: boolean = true;
-   public roles = Roles.List;
+    public user: User = new User();
+    public isNew: boolean = true;
+    public roles = Roles.List;
+    private profile: ProfileModel;
 
-   constructor(
-      private router: Router,
-      private route: ActivatedRoute,
-      private toastr: ToastrService,
-      private breadcrumbService: BreadcrumbService,
-      private userService: UserService,
-      private errorService: ErrorService
-   ) {
-   }
+    constructor(
+        private router: Router,
+        private route: ActivatedRoute,
+        private toastr: ToastrService,
+        private breadcrumbService: BreadcrumbService,
+        private userService: UserService,
+        private authService: AuthService,
+        private errorService: ErrorService
+    ) {
+    }
 
-   ngOnInit(): void {
+    ngOnInit(): void {
 
-      this.route.params.subscribe(params => {
+        this.authService.getProfile().subscribe(profile => {
+            this.profile = profile;
+        });
 
-         let id = params["id"];
-         this.isNew = id === "add";
+        this.route.params.subscribe(params => {
 
-         if (!this.isNew) {
+            let id = params["id"];
+            this.isNew = id === "add";
 
-            this.user.id = id;
-            this.loadUser();
+            if (!this.isNew) {
 
-         }
+                this.user.id = id;
+                this.loadUser();
 
-      });
-
-   }
-
-   private loadUser() {
-
-      this.userService.get(this.user.id)
-         .subscribe(
-            user => {
-               this.user = user;
-               this.changeBreadcrumb();
-            },
-            err => {
-               this.errorService.handleError(err, "User", "Load");
-               if (err instanceof HttpErrorResponse && err.status === 404)
-                  this.router.navigate(["../"], { relativeTo: this.route });
             }
-         );
 
-   }
+        });
 
-   save(form: NgForm): void {
+    }
 
-      if (form.invalid) {
+    private loadUser() {
 
-         this.toastr.error("The form has not been completed correctly.", "Form Error");
-         return;
+        this.userService.get(this.user.id)
+            .subscribe(
+                user => {
+                    this.user = user;
+                    this.changeBreadcrumb();
+                },
+                err => {
+                    this.errorService.handleError(err, "User", "Load");
+                    if (err instanceof HttpErrorResponse && err.status === 404)
+                        this.router.navigate(["../"], { relativeTo: this.route });
+                }
+            );
 
-      }
+    }
 
-      this.userService.save(this.user)
-         .subscribe(
-            user => {
-               this.toastr.success("The user has been saved", "Save User");
-               if (this.isNew) this.router.navigate(["../", user.id], { relativeTo: this.route });
-            },
-            err => {
-               this.errorService.handleError(err, "User", "Save");
-            }
-         );
+    save(form: NgForm): void {
 
-   }
+        if (form.invalid) {
 
-   delete(): void {
+            this.toastr.error("The form has not been completed correctly.", "Form Error");
+            return;
 
-      if (!confirm("Confirm delete?")) return;
+        }
 
-      this.userService.delete(this.user.id)
-         .subscribe(
-            () => {
-               this.toastr.success("The user has been deleted", "Delete User");
-               this.router.navigate(["../"], { relativeTo: this.route });
-            },
-            err => {
-               this.errorService.handleError(err, "User", "Delete");
-            }
-         );
+        this.userService.save(this.user)
+            .subscribe(
+                user => {
+                    this.toastr.success("The user has been saved", "Save User");
+                    if (this.isNew) this.router.navigate(["../", user.id], { relativeTo: this.route });
+                    else {
+                        // reload profile if editing self
+                        if (this.user.id === this.profile.userId)
+                            this.authService.getProfile(true).subscribe();
+                    }
+                },
+                err => {
+                    this.errorService.handleError(err, "User", "Save");
+                }
+            );
 
-   }
+    }
 
-   changeBreadcrumb(): void {
-      this.breadcrumbService.changeBreadcrumb(this.route.snapshot, this.user.firstName != undefined ? this.user.firstName.substring(0, 25) : "(new user)");
-   }
+    delete(): void {
+
+        if (!confirm("Confirm delete?")) return;
+
+        this.userService.delete(this.user.id)
+            .subscribe(
+                () => {
+                    this.toastr.success("The user has been deleted", "Delete User");
+                    this.router.navigate(["../"], { relativeTo: this.route });
+                },
+                err => {
+                    this.errorService.handleError(err, "User", "Delete");
+                }
+            );
+
+    }
+
+    changeBreadcrumb(): void {
+        this.breadcrumbService.changeBreadcrumb(this.route.snapshot, this.user.firstName != undefined ? this.user.firstName.substring(0, 25) : "(new user)");
+    }
 
 }

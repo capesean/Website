@@ -122,7 +122,8 @@ namespace WEB.Controllers
         [HttpDelete("{id:Guid}"), AuthorizeRoles(Roles.Administrator)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var user = await userManager.Users.FirstOrDefaultAsync(o => o.Id == id);
+            var user = await userManager.Users
+                .FirstOrDefaultAsync(o => o.Id == id);
 
             if (user == null)
                 return NotFound();

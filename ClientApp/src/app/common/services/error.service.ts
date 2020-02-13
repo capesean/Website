@@ -27,7 +27,7 @@ export class ErrorService {
                         reader.onload = function () {
                             message = <string>reader.result;
                             console.log(err);
-                            that.toastr.error(message, title);
+                            that.toastr.error(message, title, { timeOut: 0 });
                         }
                         reader.readAsText(err.error);
                         return;
@@ -55,7 +55,7 @@ export class ErrorService {
         }
 
         console.log(err);
-        this.toastr.error(message, title);
+        this.toastr.error(message, title, { timeOut: 0 });
 
     }
 
