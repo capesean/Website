@@ -1,13 +1,37 @@
 import { Injectable } from "@angular/core";
 import { ToastrService } from "ngx-toastr";
-import { HttpErrorResponse } from "@angular/common/http";
+import { HttpErrorResponse, HttpClient, HttpParams } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { environment } from "../../../environments/environment";
+import { Error, ErrorSearchOptions, ErrorSearchResponse } from "../models/error.model";
+import { SearchQuery, PagingOptions } from "../models/http.model";
+import { map } from "rxjs/operators";
 
 @Injectable()
-export class ErrorService {
+export class ErrorService extends SearchQuery {
 
     constructor(
+        private http: HttpClient,
         private toastr: ToastrService
-    ) { }
+    ) {
+        super();
+    }
+
+    search(params: ErrorSearchOptions): Observable<ErrorSearchResponse> {
+        const queryParams: HttpParams = this.buildQueryParams(params);
+        return this.http.get(`${environment.baseApiUrl}errors`, { params: queryParams, observe: 'response' })
+            .pipe(
+                map(response => {
+                    const headers = <PagingOptions>JSON.parse(response.headers.get("x-pagination"))
+                    const errors = <Error[]>response.body;
+                    return { errors: errors, headers: headers };
+                })
+            );
+    }
+
+    get(id: string): Observable<Error> {
+        return this.http.get<Error>(`${environment.baseApiUrl}errors/${id}`);
+    }
 
     public handleError(err: any, resourceType: string, action: string) {
 

@@ -8,9 +8,11 @@ import { SharedModule } from './shared.module';
 import { HomeComponent } from './home/home.component';
 import { ChangePasswordComponent } from './users/changepassword.component';
 import { CustomRoutes } from './custom.routes';
+import { ErrorComponent } from './common/error/error.component';
+import { ErrorsComponent } from './common/error/errors.component';
 
 @NgModule({
-   declarations: [HomeComponent, ChangePasswordComponent],
+   declarations: [HomeComponent, ChangePasswordComponent, ErrorsComponent, ErrorComponent],
    imports: [
       CommonModule,
       FormsModule,

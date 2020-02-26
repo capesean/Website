@@ -17,9 +17,6 @@ namespace WEB.Models
         public string Message { get; set; }
 
         [Column(TypeName = "varchar(MAX)")]
-        public string EntityValidationErrors { get; set; }
-
-        [Column(TypeName = "varchar(MAX)")]
         public string Url { get; set; }
 
         [Column(TypeName = "varchar(MAX)")]
@@ -52,20 +49,20 @@ namespace WEB.Models
 
     public class ApiExceptionAttribute : ExceptionFilterAttribute, IFilterMetadata
     {
-        Settings _s;
-        IEmailSender _es;
-        DbContextOptions _opts;
+        Settings _settings;
+        IEmailSender _emailSender;
+        DbContextOptions _options;
 
         public ApiExceptionAttribute(Settings settings, IEmailSender emailSender, DbContextOptions options)
         {
-            _s = settings;
-            _es = emailSender;
-            _opts = options;
+            _settings = settings;
+            _emailSender = emailSender;
+            _options = options;
         }
 
         public override void OnException(ExceptionContext context)
         {
-            WEB.Error.Logger.Log(context, _s, _es, _opts);
+            WEB.Error.Logger.Log(context, _settings, _emailSender, _options);
             base.OnException(context);
         }
     }

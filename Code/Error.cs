@@ -18,6 +18,7 @@ namespace WEB.Error
             var url = request.HttpContext.Request.GetEncodedUrl();
             var userName = context.HttpContext.User.Identity.Name;
             var errorMessage = context.Exception.Message;
+            var method = request.Method;
 
             string form = string.Empty;
 
@@ -35,34 +36,15 @@ namespace WEB.Error
                 form = "<REMOVED DUE TO PASSWORD SENSITIVITY>";
             }
 
-            //var entityValidationError = (string)null;
-            //try
-            //{
-            //    if (exc is DbEntityValidationException)
-            //    {
-            //        foreach (var eve in ((DbEntityValidationException)exc).EntityValidationErrors)
-            //        {
-            //            entityValidationError += string.Format("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-            //                eve.Entry.Entity.GetType().Name, eve.Entry.State) + Environment.NewLine;
-
-            //            foreach (var ve in eve.ValidationErrors)
-            //            {
-            //                entityValidationError += ve.PropertyName + " : " + ve.ErrorMessage + Environment.NewLine;
-            //            }
-            //        }
-            //    }
-            //}
-            //catch { }
-
             var error = new Models.Error
             {
                 Id = Guid.NewGuid(),
                 DateUtc = DateTime.UtcNow,
                 Message = errorMessage,
-                //EntityValidationErrors = entityValidationError,
                 Url = url,
                 UserName = userName,
-                Form = form
+                Form = form,
+                Method = method
             };
 
             error.Exception = ProcessExceptions(error, context.Exception);

@@ -31,7 +31,7 @@ namespace WEB.Controllers
 
 
             if (!string.IsNullOrWhiteSpace(q))
-                results = results.Where(o => o.FirstName.Contains(q) || o.LastName.Contains(q));
+                results = results.Where(o => o.FirstName.Contains(q) || o.LastName.Contains(q) || o.Email.Contains(q));
 
             results = results.OrderBy(o => o.Id);
 
