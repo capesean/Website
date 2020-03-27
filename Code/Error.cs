@@ -70,14 +70,14 @@ namespace WEB.Error
 
             }
 
-
             if (!string.IsNullOrWhiteSpace(settings.EmailSettings.EmailToErrors))
             {
                 var body = string.Empty;
                 body += "URL: " + url + Environment.NewLine;
                 body += "DATE: " + DateTime.UtcNow.ToString("dd MMMM yyyy, HH:mm:ss") + Environment.NewLine;
                 body += "USER: " + userName + Environment.NewLine;
-                body += "MESSAGE: " + errorMessage + Environment.NewLine;// + Environment.NewLine + entityValidationError;
+                body += "MESSAGE: " + errorMessage + Environment.NewLine;
+                body += "LINK: " + settings.RootUrl + "errors/" + error.Id.ToString().ToLower() + Environment.NewLine;
                 body += Environment.NewLine;
 
                 var exception = error.Exception;
