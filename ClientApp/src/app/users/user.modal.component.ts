@@ -21,7 +21,7 @@ export class UserModalComponent implements OnInit {
     showAddNew: boolean = false;
     allSelected: boolean = false;
 
-    @ViewChild('content', { static: false }) content: TemplateRef<any>;
+    @ViewChild('content') content: TemplateRef<any>;
     @Output() change: EventEmitter<User> = new EventEmitter<User>();
     @Input() canRemoveFilters: boolean = false;
     @Input() multiple: boolean = false;
