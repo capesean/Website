@@ -35,7 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\app.server.module.ts" />
     <None Remove="ClientApp\src\app\common\pipes\momentPipe.ts" />
+    <None Remove="ClientApp\src\test.ts" />
   </ItemGroup>
 
   <ItemGroup>
