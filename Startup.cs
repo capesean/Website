@@ -21,6 +21,7 @@ namespace WEB
     {
         public IConfiguration Configuration { get; }
         private IWebHostEnvironment Environment { get; }
+        private Settings settings { get; set; }
         private DbContextOptions options { get; set; }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
@@ -39,6 +40,7 @@ namespace WEB
             settings.RootPath = Environment.ContentRootPath + (Environment.ContentRootPath.EndsWith(@"\") ? "" : @"\");
             settings.IsDevelopment = Environment.IsDevelopment();
             services.AddSingleton(settings);
+            this.settings = settings;
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -209,7 +211,7 @@ namespace WEB
             using (var um = scope.ServiceProvider.GetService<UserManager<User>>())
             using (var rm = scope.ServiceProvider.GetService<RoleManager<AppRole>>())
             {
-                db.InitAsync(um, rm).Wait();
+                db.InitAsync(um, rm, settings, this.options).Wait();
             }
 
             app.Use(async (context, next) =>

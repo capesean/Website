@@ -30,19 +30,28 @@ namespace WEB.Models
             return new ApplicationDbContext();
         }
 
-        internal async Task InitAsync(UserManager<User> um, RoleManager<AppRole> rm)
+        internal async Task InitAsync(UserManager<User> um, RoleManager<AppRole> rm, Settings settings, DbContextOptions options)
         {
-            //// if not using migrations:
-            //Database.EnsureDeleted();
-            //Database.EnsureCreated();
-            //AddComputedColumns();
+            if (settings.IsDevelopment)
+            {
+                // if not using migrations:
+                //Database.EnsureDeleted();
+                //Database.EnsureCreated();
+                //AddComputedColumns();
+                //AddNullableUniqueIndexes();
+                //await SeedAsync(um, rm, settings, options);
 
-            //// if using migrations:
-            //Database.EnsureCreated();
-            //Database.Migrate();
-            //AddComputedColumns();
-
-            await SeedAsync(um, rm);
+                // if using migrations:
+                //Database.EnsureCreated();
+                //Database.Migrate();
+                //AddComputedColumns();
+                //AddNullableUniqueIndexes();
+                //await SeedAsync(um, rm);
+            }
+            else
+            {
+                Database.Migrate();
+            }
 
             await DeleteErrors(-7);
         }
@@ -164,6 +173,11 @@ namespace WEB.Models
             Database.ExecuteSqlRaw($"IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tableName}' AND COLUMN_NAME = '{fieldName}') ALTER TABLE {tableName} DROP COLUMN {fieldName};");
             // add column
             Database.ExecuteSqlRaw($"ALTER TABLE {tableName} ADD {fieldName} AS {calculation};");
+        }
+
+        private void CreateNullableUniqueIndex(string tableName, string fieldName)
+        {
+            Database.ExecuteSqlRaw($"CREATE UNIQUE NONCLUSTERED INDEX IX_{tableName}_{fieldName} ON {tableName}({fieldName}) WHERE {fieldName} IS NOT NULL;");
         }
 
     }
