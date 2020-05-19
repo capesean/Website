@@ -274,3 +274,22 @@ ngb-datepicker .is-valid, .was-validated ngb-datepicker :valid {
     padding-right: inherit !important;
     background: inherit !important;
 }
+
+.nav-tabs .nav-link {
+    border-color: #e9ecef #e9ecef #dee2e6;
+    margin-right: 3px;
+    background-color: #fafafa;
+}
+
+    .nav-tabs .nav-link:hover {
+        border-color: #ddd #ddd #dee2e6;
+        background-color: white;
+    }
+
+:not(:disabled) [ngbdatepicker]:read-only:not(:disabled) {
+    background-color: white !important;
+}
+
+input[type=file] {
+    padding: 2px;
+}

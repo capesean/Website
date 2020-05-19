@@ -5,6 +5,7 @@ import { AuthStateModel } from './common/auth/auth.models';
 import { AuthService } from './common/auth/auth.service';
 import { Title } from '@angular/platform-browser';
 import { environment } from '../environments/environment';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-root',
@@ -20,6 +21,9 @@ export class AppComponent implements OnInit {
         private titleService: Title
     ) {
         titleService.setTitle(environment.siteName);
+        //const locale = window.navigator.language;
+        //if (locale) moment.locale(locale);
+        moment.locale("en-gb");
     }
 
     ngOnInit(): void {
