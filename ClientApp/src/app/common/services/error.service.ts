@@ -35,28 +35,30 @@ export class ErrorService extends SearchQuery {
 
     public handleError(err: any, resourceType: string, action: string) {
 
-        var title = `${action} ${resourceType} Error`;
-        var message = `Failed to ${action} the ${resourceType}`;
+        const title = `${action} ${resourceType} Error`;
+        let message = `Failed to ${action} the ${resourceType}`;
 
         if (err instanceof HttpErrorResponse) {
-            var httpError = <HttpErrorResponse>err;
+            const httpError = err as HttpErrorResponse;
             if (httpError.status === 0)
                 message = "Unable to connect to the web server";
+            else if (httpError.status === 500)
+                message = "An unexpected error was encountered. The error information has been logged and will be attended to.";
             else if (httpError.status === 400) {
                 if (typeof err.error === "object") {
                     message = "";
                     if (err.error instanceof Blob) {
-                        var reader = new FileReader();
-                        var that = this;
+                        const reader = new FileReader();
+                        const that = this;
                         reader.onload = function () {
-                            message = <string>reader.result;
+                            message = reader.result as string;
                             console.log(err);
                             that.toastr.error(message, title, { timeOut: 0 });
                         }
                         reader.readAsText(err.error);
                         return;
                     }
-                    for (var key in err.error) {
+                    for (const key in err.error) {
                         message += err.error[key] + "<br/>";
                     }
                 } else {
