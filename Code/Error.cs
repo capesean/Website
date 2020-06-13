@@ -4,9 +4,47 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Http.Extensions;
 using System.IO;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace WEB.Error
 {
+    public class HandledException : Exception
+    {
+        public HandledException(string message) : base(message) { }
+    }
+
+    public class ApiExceptionAttribute : ExceptionFilterAttribute, IFilterMetadata
+    {
+        Settings _settings;
+        IEmailSender _emailSender;
+        DbContextOptions _options;
+
+        public ApiExceptionAttribute(Settings settings, IEmailSender emailSender, DbContextOptions options)
+        {
+            _settings = settings;
+            _emailSender = emailSender;
+            _options = options;
+        }
+
+        public override void OnException(ExceptionContext context)
+        {
+            if (context.Exception is HandledException)
+            {
+                context.Result = new ObjectResult(context.Exception.Message)
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest
+                };
+                context.ExceptionHandled = true;
+            }
+            else
+            {
+                Logger.Log(context, _settings, _emailSender, _options);
+                base.OnException(context);
+            }
+        }
+    }
+
     public static class Logger
     {
         public static void Log(ExceptionContext context, Settings settings, IEmailSender emailSender, DbContextOptions options)

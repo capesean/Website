@@ -47,25 +47,4 @@ namespace WEB.Models
         public virtual ErrorException InnerException { get; set; }
     }
 
-    public class ApiExceptionAttribute : ExceptionFilterAttribute, IFilterMetadata
-    {
-        Settings _settings;
-        IEmailSender _emailSender;
-        DbContextOptions _options;
-
-        public ApiExceptionAttribute(Settings settings, IEmailSender emailSender, DbContextOptions options)
-        {
-            _settings = settings;
-            _emailSender = emailSender;
-            _options = options;
-        }
-
-        public override void OnException(ExceptionContext context)
-        {
-            WEB.Error.Logger.Log(context, _settings, _emailSender, _options);
-            base.OnException(context);
-        }
-    }
-
-
 }
