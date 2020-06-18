@@ -18,13 +18,13 @@ export class UserModalComponent implements OnInit {
     headers: PagingOptions = new PagingOptions();
     searchOptions: UserSearchOptions = new UserSearchOptions();
     users: User[];
-    showAddNew: boolean = false;
-    allSelected: boolean = false;
+    allSelected = false;
 
-    @ViewChild('content') content: TemplateRef<any>;
+    @ViewChild('content', { static: false }) content: TemplateRef<any>;
     @Output() change: EventEmitter<User> = new EventEmitter<User>();
-    @Input() canRemoveFilters: boolean = false;
-    @Input() multiple: boolean = false;
+    @Input() canRemoveFilters = false;
+    @Input() multiple = false;
+    @Input() showAddNew = false;
 
     constructor(
         private modalService: NgbModal,
@@ -49,11 +49,11 @@ export class UserModalComponent implements OnInit {
         });
     }
 
-    private runSearch(pageIndex: number = 0): Observable<UserSearchResponse> {
+    private runSearch(pageIndex = 0): Observable<UserSearchResponse> {
 
         this.searchOptions.pageIndex = pageIndex;
 
-        var observable = this.userService
+        const observable = this.userService
             .search(this.searchOptions);
 
         observable.subscribe(
@@ -85,8 +85,8 @@ export class UserModalComponent implements OnInit {
     select(user: User) {
         if (this.multiple) {
             if (this.isSelected(user)) {
-                for (var i = 0; i < this.selectedItems.length; i++) {
-                    if (this.selectedItems[i].id == user.id) {
+                for (let i = 0; i < this.selectedItems.length; i++) {
+                    if (this.selectedItems[i].id === user.id) {
                         this.selectedItems.splice(i, 1);
                         break;
                     }
@@ -107,10 +107,10 @@ export class UserModalComponent implements OnInit {
     toggleAll() {
         this.allSelected = !this.allSelected;
         this.users.forEach(user => {
-            let isSelected = this.isSelected(user);
+            const isSelected = this.isSelected(user);
 			if (isSelected && !this.allSelected) {
-                for (var i = 0; i < this.selectedItems.length; i++) {
-                    if (this.selectedItems[i].id == user.id) {
+                for (let i = 0; i < this.selectedItems.length; i++) {
+                    if (this.selectedItems[i].id === user.id) {
                         this.selectedItems.splice(i, 1);
                         break;
                     }
@@ -138,5 +138,9 @@ export class UserModalComponent implements OnInit {
                 }
             );
 
+    }
+
+    addNew() {
+        window.open("/users/add", "_blank");
     }
 }

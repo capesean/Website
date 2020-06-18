@@ -13,5 +13,9 @@ namespace WEB.Models
         {
             CreateComputedColumn("AspNetUsers", "FullName", "FirstName + ' ' + LastName");
         }
+
+        public void AddNullableUniqueIndexes()
+        {
+        }
     }
 }

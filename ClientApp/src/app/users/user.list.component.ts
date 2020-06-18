@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { PagingOptions } from '../common/models/http.model';
 import { ErrorService } from '../common/services/error.service';
 import { UserSearchOptions, UserSearchResponse, User } from '../common/models/user.model';
@@ -38,26 +38,25 @@ export class UserListComponent implements OnInit {
         this.routerSubscription.unsubscribe();
     }
 
-    runSearch(pageIndex: number = 0): Observable<UserSearchResponse> {
+    runSearch(pageIndex = 0): Subject<UserSearchResponse> {
 
         this.searchOptions.pageIndex = pageIndex;
 
-        var observable = this.userService
-            .search(this.searchOptions);
+        const subject = new Subject<UserSearchResponse>();
 
-        observable.subscribe(
-            response => {
-                this.users = response.users;
-                this.headers = response.headers;
-            },
-            err => {
+        this.userService.search(this.searchOptions)
+            .subscribe(
+                response => {
+                    subject.next(response);
+                    this.users = response.users;
+                    this.headers = response.headers;
+                },
+                err => {
+                    this.errorService.handleError(err, "Users", "Load");
+                }
+            );
 
-                this.errorService.handleError(err, "Users", "Load");
-
-            }
-        );
-
-        return observable;
+        return subject;
 
     }
 

@@ -9,11 +9,12 @@ export class User {
     enabled: boolean;
     testDate: Date;
     testDateTime: Date;
-    roles: Role[] = [];
+    roles: string[] = [];
     email: string;
 
     constructor() {
         this.id = "00000000-0000-0000-0000-000000000000";
+        this.enabled = true;
     }
 }
 

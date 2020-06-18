@@ -29,9 +29,8 @@ namespace WEB.Controllers
 
             if (roleId != null) results = results.Where(o => o.Roles.Any(r => r.RoleId == roleId));
 
-
             if (!string.IsNullOrWhiteSpace(q))
-                results = results.Where(o => o.FirstName.Contains(q) || o.LastName.Contains(q) || o.Email.Contains(q));
+                results = results.Where(o => o.Email.Contains(q) || o.FirstName.Contains(q) || o.LastName.Contains(q));
 
             results = results.OrderBy(o => o.Id);
 
@@ -74,7 +73,6 @@ namespace WEB.Controllers
                 user = new User();
                 password = Utilities.General.GenerateRandomPassword(opts.Value);
 
-                db.Entry(user).State = EntityState.Added;
             }
             else
             {
@@ -85,7 +83,6 @@ namespace WEB.Controllers
                 if (user == null)
                     return NotFound();
 
-                db.Entry(user).State = EntityState.Modified;
             }
 
             ModelFactory.Hydrate(user, userDTO);

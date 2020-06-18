@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
+import { Subject, Subscription } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BreadcrumbService } from 'angular-crumbs';
 import { ErrorService } from '../common/services/error.service';
 import { User } from '../common/models/user.model';
 import { UserService } from '../common/services/user.service';
-import { Roles } from '../common/models/roles.model';
+import { Roles, Role } from '../common/models/roles.model';
 import { AuthService } from '../common/auth/auth.service';
 import { ProfileModel } from '../common/auth/auth.models';
 
@@ -18,8 +19,8 @@ import { ProfileModel } from '../common/auth/auth.models';
 export class UserEditComponent implements OnInit {
 
     public user: User = new User();
-    public isNew: boolean = true;
-    public roles = Roles.List;
+    public isNew = true;
+    public roles: Role[] = Roles.List;
     private profile: ProfileModel;
 
     constructor(
@@ -41,7 +42,7 @@ export class UserEditComponent implements OnInit {
 
         this.route.params.subscribe(params => {
 
-            let id = params["id"];
+            const id = params["id"];
             this.isNew = id === "add";
 
             if (!this.isNew) {
@@ -55,7 +56,7 @@ export class UserEditComponent implements OnInit {
 
     }
 
-    private loadUser() {
+    private loadUser(): void {
 
         this.userService.get(this.user.id)
             .subscribe(
@@ -117,7 +118,7 @@ export class UserEditComponent implements OnInit {
     }
 
     changeBreadcrumb(): void {
-        this.breadcrumbService.changeBreadcrumb(this.route.snapshot, this.user.firstName != undefined ? this.user.firstName.substring(0, 25) : "(new user)");
+        this.breadcrumbService.changeBreadcrumb(this.route.snapshot, this.user.firstName !== undefined ? this.user.firstName.substring(0, 25) : "(new user)");
     }
 
 }

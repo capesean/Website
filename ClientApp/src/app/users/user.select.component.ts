@@ -19,14 +19,14 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
     @Input() id: string | string[];
     @Input() user: User | User[];
     @Output() userChange = new EventEmitter<User | User[]>();
-    @Input() canRemoveFilters: boolean = false;
-    @Input() multiple: boolean = false;
+    @Input() canRemoveFilters = false;
+    @Input() multiple = false;
+    @Input() showAddNew = false;
 
-    showAddNew: boolean = false;
-    disabled: boolean = false;
+    disabled = false;
     placeholder = this.multiple ? "Select users" : "Select an user";
 
-    @ViewChild('modal') modal: UserModalComponent;
+    @ViewChild('modal', { static: false }) modal: UserModalComponent;
 
     constructor(
     ) {
@@ -35,7 +35,7 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
     ngOnInit(): void {
     }
 
-    propagateChange = (_: any) => { };
+    propagateChange = (_) => { };
 
     writeValue(id: string | string[]): void {
         if (id !== undefined) {
@@ -44,34 +44,34 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
         }
     }
 
-    registerOnChange(fn: any): void {
+    registerOnChange(fn): void {
         this.propagateChange = fn;
     }
 
-    registerOnTouched(fn: any): void {
+    registerOnTouched(): void {
     }
 
     setDisabledState?(isDisabled: boolean): void {
         this.disabled = isDisabled;
     }
 
-    change(user: User | User[]) {
+    changed(user: User | User[]) {
         if (this.disabled) return;
         this.user = user;
         this.userChange.emit(user);
         if (this.multiple)
-            this.writeValue(user ? (<User[]><unknown>user).map(o => o.id) : null);
+            this.writeValue(user ? (user as User[]).map(o => o.id) : null);
         else
-            this.writeValue(user ? (<User>user).id : null);
+            this.writeValue(user ? (user as User).id : null);
     }
 
     getLabel() {
         if (this.multiple) {
             let label = "";
-            (<User[]><unknown>this.user).forEach(user => label += (label == "" ? "" : ", ") + user.firstName);
+            (this.user as User[]).forEach(user => label += (label === "" ? "" : ", ") + user.firstName);
             return label;
         }
-        return this.user ? (<User>this.user).firstName : "";
+        return this.user ? (this.user as User).firstName : "";
     }
 
     openModal() {

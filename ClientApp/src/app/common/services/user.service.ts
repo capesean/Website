@@ -18,8 +18,8 @@ export class UserService extends SearchQuery {
         return this.http.get(`${environment.baseApiUrl}users`, { params: queryParams, observe: 'response' })
             .pipe(
                 map(response => {
-                    const headers = <PagingOptions>JSON.parse(response.headers.get("x-pagination"))
-                    const users = <User[]>response.body;
+                    const headers = JSON.parse(response.headers.get("x-pagination")) as PagingOptions;
+                    const users = response.body as User[];
                     return { users: users, headers: headers };
                 })
             );

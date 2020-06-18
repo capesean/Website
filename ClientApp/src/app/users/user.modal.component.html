@@ -35,14 +35,14 @@
                 <tr>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th class="text-center fa-col-width" *ngIf="multiple"><i class="fa fa-fw clickable" [ngClass]="{ 'fa-check-square': allSelected, 'fa-square': !allSelected }" (click)="toggleAll()"></i></th>
+                    <th class="text-center fa-col-width" *ngIf="multiple"><i class="fas fa-fw clickable" [ngClass]="{ 'fa-check-square': allSelected, 'fa-square': !allSelected }" (click)="toggleAll()"></i></th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let user of users" (click)="select(user)">
                     <td>{{ user.firstName }}</td>
                     <td>{{ user.lastName }}</td>
-                    <td *ngIf="multiple" class="text-center"><i [ngClass]="{ 'fa-check-square': isSelected(user), 'fa-square': !isSelected(user) }" class="fa fa-fw"></i></td>
+                    <td *ngIf="multiple" class="text-center"><i [ngClass]="{ 'fa-check-square': isSelected(user), 'fa-square': !isSelected(user) }" class="fas fa-fw"></i></td>
                 </tr>
             </tbody>
         </table>
