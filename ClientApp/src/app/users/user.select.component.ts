@@ -26,7 +26,7 @@ export class UserSelectComponent implements OnInit, ControlValueAccessor {
     disabled = false;
     placeholder = this.multiple ? "Select users" : "Select an user";
 
-    @ViewChild('modal', { static: false }) modal: UserModalComponent;
+    @ViewChild('modal') modal: UserModalComponent;
 
     constructor(
     ) {

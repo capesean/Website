@@ -11,36 +11,30 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { UserSelectComponent } from './users/user.select.component';
 import { UserModalComponent } from './users/user.modal.component';
-import { HasRoleDirective } from './common/directives/hasRole';
 
 @NgModule({
-    declarations: [
-        PagerComponent,
-        MainComponent,
-        NavMenuComponent,
-        MomentPipe,
-        HasRoleDirective,
-        UserSelectComponent,
-        UserModalComponent
-    ],
-    imports: [
-        CommonModule,
-        FormsModule,
-        RouterModule,
-        NgbModule,
-        DragDropModule,
-        BreadcrumbModule,
-        HasRoleDirective
-    ],
-    exports: [
-        PagerComponent,
-        MainComponent,
-        NavMenuComponent,
-        NgbModule,
-        MomentPipe,
-        HasRoleDirective,
-        UserSelectComponent,
-        UserModalComponent
-    ]
+   imports: [
+      CommonModule,
+      FormsModule,
+      RouterModule,
+      NgbModule,
+      DragDropModule,
+      BreadcrumbModule
+   ],
+   declarations: [
+      PagerComponent,
+      MainComponent,
+      NavMenuComponent,
+      MomentPipe,
+      UserSelectComponent, UserModalComponent
+   ],
+   exports: [
+      PagerComponent,
+      MainComponent,
+      NavMenuComponent,
+      NgbModule,
+      MomentPipe,
+      UserSelectComponent, UserModalComponent
+   ]
 })
 export class SharedModule { }

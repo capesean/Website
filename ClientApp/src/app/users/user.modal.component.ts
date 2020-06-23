@@ -20,11 +20,12 @@ export class UserModalComponent implements OnInit {
     users: User[];
     allSelected = false;
 
-    @ViewChild('content', { static: false }) content: TemplateRef<any>;
+    @ViewChild('content') content: TemplateRef<any>;
     @Output() change: EventEmitter<User> = new EventEmitter<User>();
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
     @Input() showAddNew = false;
+    @Input() title = this.multiple ? "Select Users" : "Select a user";
 
     constructor(
         private modalService: NgbModal,
