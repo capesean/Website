@@ -9,32 +9,40 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { AppFileInputDirective } from './common/directives/appfileinput';
+import { AppHasRoleDirective } from './common/directives/apphasrole';
 import { UserSelectComponent } from './users/user.select.component';
 import { UserModalComponent } from './users/user.modal.component';
 
 @NgModule({
-   imports: [
-      CommonModule,
-      FormsModule,
-      RouterModule,
-      NgbModule,
-      DragDropModule,
-      BreadcrumbModule
-   ],
-   declarations: [
-      PagerComponent,
-      MainComponent,
-      NavMenuComponent,
-      MomentPipe,
-      UserSelectComponent, UserModalComponent
-   ],
-   exports: [
-      PagerComponent,
-      MainComponent,
-      NavMenuComponent,
-      NgbModule,
-      MomentPipe,
-      UserSelectComponent, UserModalComponent
-   ]
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule,
+        NgbModule,
+        DragDropModule,
+        BreadcrumbModule
+    ],
+    declarations: [
+        PagerComponent,
+        MainComponent,
+        NavMenuComponent,
+        MomentPipe,
+        AppFileInputDirective,
+        AppHasRoleDirective,
+        UserSelectComponent,
+        UserModalComponent
+    ],
+    exports: [
+        PagerComponent,
+        MainComponent,
+        NavMenuComponent,
+        NgbModule,
+        MomentPipe,
+        AppFileInputDirective,
+        AppHasRoleDirective,
+        UserSelectComponent,
+        UserModalComponent
+    ]
 })
 export class SharedModule { }

@@ -3,14 +3,14 @@ import { ProfileModel } from "../auth/auth.models";
 import { AuthService } from "../auth/auth.service";
 
 @Directive({
-    selector: '[hasRole]'
+    selector: '[appHasRole]'
 })
-export class HasRoleDirective implements AfterViewInit {
+export class AppHasRoleDirective implements AfterViewInit {
 
-    @Input('hasRole')
+    @Input('appHasRole')
     public role: string;
 
-    @Input('hasRoleProfile')
+    @Input('appHasRoleProfile')
     public profile: ProfileModel;
 
     constructor(
