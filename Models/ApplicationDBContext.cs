@@ -59,7 +59,7 @@ namespace WEB.Models
         private async Task DeleteErrors(int since)
         {
             var cutoff = DateTime.Now.AddDays(since);
-            foreach (var error in Errors.Where(o => o.DateUtc < cutoff))
+            foreach (var error in Errors.Where(o => o.DateUtc < cutoff).ToList())
             {
                 Entry(error).State = EntityState.Deleted;
                 Guid? exceptionId = error.ExceptionId;
