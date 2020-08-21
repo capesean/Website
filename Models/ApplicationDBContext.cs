@@ -177,6 +177,7 @@ namespace WEB.Models
 
         private void CreateNullableUniqueIndex(string tableName, string fieldName)
         {
+            Database.ExecuteSqlRaw($"DROP INDEX IF EXISTS IX_{tableName}_{fieldName} ON {tableName};");
             Database.ExecuteSqlRaw($"CREATE UNIQUE NONCLUSTERED INDEX IX_{tableName}_{fieldName} ON {tableName}({fieldName}) WHERE {fieldName} IS NOT NULL;");
         }
 
