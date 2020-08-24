@@ -7,58 +7,61 @@ import { Router } from '@angular/router';
 import { ErrorService } from '../../common/services/error.service';
 
 @Component({
-   selector: 'login',
-   templateUrl: './login.component.html',
-   styleUrls: ['./auth.css'],
+    selector: 'login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./auth.css'],
 })
 export class LoginComponent implements OnInit {
 
-   public login: LoginModel = { username: undefined, password: undefined };
+    public login: LoginModel = { username: undefined, password: undefined };
 
-   constructor(
-      private toastr: ToastrService,
-      private authService: AuthService,
-      private router: Router,
-      private errorService: ErrorService
-   ) { }
+    constructor(
+        private toastr: ToastrService,
+        private authService: AuthService,
+        private router: Router,
+        private errorService: ErrorService
+    ) { }
 
-   ngOnInit() {
-   }
+    ngOnInit() {
+    }
 
-   register() {
-      this.authService.register(this.login)
-         .subscribe(
-            () => {
-               this.toastr.success("Registration successful!", "Register New Account");
-            },
-            err => {
-               this.errorService.handleError(err, "User", "Register");
-            }
-         );
-   }
+    register() {
+        this.authService.register(this.login)
+            .subscribe(
+                () => {
+                    this.toastr.success("Registration successful!", "Register New Account");
+                },
+                err => {
+                    this.errorService.handleError(err, "User", "Register");
+                }
+            );
+    }
 
-   submit(form: NgForm) {
+    submit(form: NgForm) {
 
-      if (form.invalid) {
+        if (form.invalid) {
 
-         this.toastr.error("The form has not been completed correctly.", "Error");
-         return;
+            this.toastr.error("The form has not been completed correctly.", "Error");
+            return;
 
-      }
+        }
 
-      // todo: use ngForm
-      // todo: this needs to return a promise, and if success, THEN navigate, else route won't be allowed...
-      this.authService.login(this.login)
-         .subscribe(
-            () => {
-               this.router.navigate(['/']);
-            },
-            err => {
-               // todo: reason?
-               this.toastr.error("Login failed", "Login");
-            }
-         );
+        // todo: use ngForm
+        // todo: this needs to return a promise, and if success, THEN navigate, else route won't be allowed...
+        this.authService.login(this.login)
+            .subscribe(
+                () => {
+                    this.router.navigate(['/']);
+                },
+                err => {
+                    if (err.error && err.error.errorDescription)
+                        this.toastr.error(err.error.errorDescription, "Login Failed");
+                    else
+                        this.errorService.handleError(err, "User", "Login");
+                    this.toastr.error("Login failed", "Login");
+                }
+            );
 
-   }
+    }
 
 }

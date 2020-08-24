@@ -56,7 +56,7 @@ namespace AuthorizationServer.Controllers
                     return BadRequest(new OpenIdConnectResponse
                     {
                         Error = OpenIdConnectConstants.Errors.InvalidGrant,
-                        ErrorDescription = "The username/password couple is invalid."
+                        ErrorDescription = "The login details are not valid."
                     });
                 }
 
@@ -76,7 +76,7 @@ namespace AuthorizationServer.Controllers
                     return BadRequest(new OpenIdConnectResponse
                     {
                         Error = OpenIdConnectConstants.Errors.InvalidGrant,
-                        ErrorDescription = "The username/password couple is invalid."
+                        ErrorDescription = "The login details are not valid."
                     });
                 }
 
