@@ -22,8 +22,8 @@ export class ErrorService extends SearchQuery {
         return this.http.get(`${environment.baseApiUrl}errors`, { params: queryParams, observe: 'response' })
             .pipe(
                 map(response => {
-                    const headers = <PagingOptions>JSON.parse(response.headers.get("x-pagination"))
-                    const errors = <Error[]>response.body;
+                    const headers = JSON.parse(response.headers.get("x-pagination")) as PagingOptions;
+                    const errors = response.body as Error[];
                     return { errors: errors, headers: headers };
                 })
             );
@@ -49,11 +49,10 @@ export class ErrorService extends SearchQuery {
                     message = "";
                     if (err.error instanceof Blob) {
                         const reader = new FileReader();
-                        const that = this;
-                        reader.onload = function () {
+                        reader.onload = () => {
                             message = reader.result as string;
                             console.log(err);
-                            that.toastr.error(message, title, { timeOut: 0 });
+                            this.toastr.error(message, title, { timeOut: 0 });
                         }
                         reader.readAsText(err.error);
                         return;

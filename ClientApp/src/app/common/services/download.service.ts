@@ -19,7 +19,7 @@ export class DownloadService extends SearchQuery {
             );
     }
 
-    private convertResponse(response: HttpResponse<any>): DownloadModel {
+    private convertResponse(response: HttpResponse<unknown>): DownloadModel {
         const contentType = response.headers.get('Content-Type');
         const contentDispositionHeader = response.headers.get('Content-Disposition');
         const result = contentDispositionHeader.split(';')[1].trim().split('=')[1];

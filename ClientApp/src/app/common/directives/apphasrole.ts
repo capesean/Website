@@ -15,7 +15,7 @@ export class AppHasRoleDirective implements AfterViewInit {
 
     constructor(
         private viewContainer: ViewContainerRef,
-        private templateRef: TemplateRef<any>,
+        private templateRef: TemplateRef<unknown>,
         private authService: AuthService
     ) {
     }

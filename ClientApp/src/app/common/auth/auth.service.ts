@@ -59,10 +59,10 @@ export class AuthService {
       return this.http.post<void>(`${environment.baseApiUrl}authorization/reset`, data);
    }
 
-   login(user: LoginModel): Observable<any> {
+   login(user: LoginModel): Observable<void | AuthTokenModel> {
       return this.getTokens(user, 'password')
          .pipe(catchError(res => throwError(res)))
-         .pipe(tap(res => this.scheduleRefresh()));
+         .pipe(tap(() => this.scheduleRefresh()));
    }
 
    logout(): void {

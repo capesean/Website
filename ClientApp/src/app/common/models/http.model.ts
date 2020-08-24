@@ -2,10 +2,10 @@ import { HttpParams } from '@angular/common/http';
 
 export class SearchQuery {
 
-    buildQueryParams(source: Object): HttpParams {
+    buildQueryParams(source: unknown): HttpParams {
         let target: HttpParams = new HttpParams();
         Object.keys(source).forEach((key: string) => {
-            const value: string | number | boolean | Date = source[key];
+            const value: unknown = source[key];
             if (typeof value === 'undefined' || value === null) {
                 // add nothing / ignore
             } else if (value instanceof Array) {
@@ -21,16 +21,16 @@ export class SearchQuery {
 }
 
 export class SearchOptions {
-    includeEntities: boolean = false;
-    pageIndex: number = 0;
-    pageSize: number = 10;
+    includeEntities = false;
+    pageIndex = 0;
+    pageSize = 10;
     orderBy: string = undefined;
     orderByAscending: boolean = undefined;
 }
 
 export class PagingOptions {
-    pageIndex: number = 0;
-    pageSize: number = 10;
+    pageIndex = 0;
+    pageSize = 10;
     records: number;
     totalRecords: number;
     totalPages: number;

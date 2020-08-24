@@ -20,7 +20,7 @@ export class UserModalComponent implements OnInit {
     users: User[];
     allSelected = false;
 
-    @ViewChild('content') content: TemplateRef<any>;
+    @ViewChild('content') content: TemplateRef<unknown>;
     @Output() change: EventEmitter<User> = new EventEmitter<User>();
     @Input() canRemoveFilters = false;
     @Input() multiple = false;
