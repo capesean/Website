@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { MainComponent } from './main.component';
 import { NavMenuComponent } from './common/nav-menu/nav-menu.component';
 import { MomentPipe } from './common/pipes/momentPipe';
+import { BooleanPipe } from './common/pipes/booleanPipe';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -30,6 +31,7 @@ import { BooleanPipe } from './common/pipes/booleanPipe';
         NavMenuComponent,
         MomentPipe,
         BooleanPipe,
+        BooleanPipe,
         AppFileInputDirective,
         AppHasRoleDirective,
         UserSelectComponent,
@@ -41,6 +43,7 @@ import { BooleanPipe } from './common/pipes/booleanPipe';
         NavMenuComponent,
         NgbModule,
         MomentPipe,
+        BooleanPipe,
         BooleanPipe,
         AppFileInputDirective,
         AppHasRoleDirective,
