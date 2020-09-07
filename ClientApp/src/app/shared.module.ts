@@ -13,6 +13,7 @@ import { AppFileInputDirective } from './common/directives/appfileinput';
 import { AppHasRoleDirective } from './common/directives/apphasrole';
 import { UserSelectComponent } from './users/user.select.component';
 import { UserModalComponent } from './users/user.modal.component';
+import { BooleanPipe } from './common/pipes/booleanPipe';
 
 @NgModule({
     imports: [
@@ -28,6 +29,7 @@ import { UserModalComponent } from './users/user.modal.component';
         MainComponent,
         NavMenuComponent,
         MomentPipe,
+        BooleanPipe,
         AppFileInputDirective,
         AppHasRoleDirective,
         UserSelectComponent,
@@ -39,6 +41,7 @@ import { UserModalComponent } from './users/user.modal.component';
         NavMenuComponent,
         NgbModule,
         MomentPipe,
+        BooleanPipe,
         AppFileInputDirective,
         AppHasRoleDirective,
         UserSelectComponent,

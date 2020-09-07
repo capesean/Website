@@ -5,9 +5,9 @@ import * as moment from 'moment';
     name: 'momentPipe'
 })
 export class MomentPipe implements PipeTransform {
-    transform(value: Date | moment.Moment, ...args: any[]): any {
+    transform(value: Date | moment.Moment, ...args: string[]): string {
         if (value === undefined || value === null) return '';
-        let [format] = args;
+        const [format] = args;
         return moment(value).format(format);
     }
 }

@@ -65,7 +65,7 @@ namespace AuthorizationServer.Controllers
                     return BadRequest(new OpenIdConnectResponse
                     {
                         Error = OpenIdConnectConstants.Errors.InvalidGrant,
-                        ErrorDescription = "The user has been disabled."
+                        ErrorDescription = "The user has been temporarily disabled."
                     });
                 }
 
