@@ -6,36 +6,37 @@ import { ProfileModel } from '../auth/auth.models';
 import { Roles } from '../models/roles.model';
 
 @Component({
-   selector: 'app-nav-menu',
-   templateUrl: './nav-menu.component.html',
-   styleUrls: ['./nav-menu.component.css']
+    selector: 'app-nav-menu',
+    templateUrl: './nav-menu.component.html',
+    styleUrls: ['./nav-menu.component.css']
 })
 export class NavMenuComponent implements OnInit {
-   isExpanded = false;
-   profile: ProfileModel;
-   isAdmin: boolean = false;
 
-   constructor(
-      private authService: AuthService,
-      private toastr: ToastrService,
-      private router: Router
-   ) {
-   }
+    public isExpanded = false;
+    public profile: ProfileModel;
+    public isAdmin = false;
 
-   ngOnInit(): void {
-      this.authService.getProfile().subscribe(profile => {
-         this.profile = profile;
-         this.isAdmin = this.authService.isInRole(profile, Roles.Administrator);
-      });
-   }
+    constructor(
+        private authService: AuthService,
+        private toastr: ToastrService,
+        private router: Router
+    ) {
+    }
 
-   logout() {
-      this.authService.logout();
-      this.toastr.success("You have been logged out successfully", "Log Out");
-      this.router.navigate(["/auth/login"]);
-   }
+    ngOnInit(): void {
+        this.authService.getProfile().subscribe(profile => {
+            this.profile = profile;
+            this.isAdmin = this.authService.isInRole(profile, Roles.Administrator);
+        });
+    }
 
-   toggle() {
-      this.isExpanded = !this.isExpanded;
-   }
+    logout() {
+        this.authService.logout();
+        this.toastr.success("You have been logged out successfully", "Log Out");
+        this.router.navigate(["/auth/login"]);
+    }
+
+    toggle() {
+        this.isExpanded = !this.isExpanded;
+    }
 }
