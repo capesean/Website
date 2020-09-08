@@ -51,14 +51,17 @@ export class ErrorService extends SearchQuery {
                         const reader = new FileReader();
                         reader.onload = () => {
                             message = reader.result as string;
-                            console.log(err);
                             this.toastr.error(message, title, { timeOut: 0 });
                         }
                         reader.readAsText(err.error);
                         return;
-                    }
-                    for (const key in err.error) {
-                        message += err.error[key] + "<br/>";
+                    } else if (err.error.errorDescription) {
+                        message = err.error.errorDescription;
+                    } else {
+                        for (const key in err.error) {
+                            if (err.error[key])
+                                message += err.error[key] + "<br/>";
+                        }
                     }
                 } else {
                     message = err.error;
@@ -80,7 +83,7 @@ export class ErrorService extends SearchQuery {
         }
 
         console.log(err);
-        this.toastr.error(message, title, { timeOut: 0 });
+        this.toastr.error(message, undefined, { timeOut: 0 });
 
     }
 

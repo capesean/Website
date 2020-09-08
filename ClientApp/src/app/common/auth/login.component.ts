@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { LoginModel } from './auth.models';
 import { Router } from '@angular/router';
 import { ErrorService } from '../../common/services/error.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'login',
@@ -25,23 +26,11 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
     }
 
-    register() {
-        this.authService.register(this.login)
-            .subscribe(
-                () => {
-                    this.toastr.success("Registration successful!", "Register New Account");
-                },
-                err => {
-                    this.errorService.handleError(err, "User", "Register");
-                }
-            );
-    }
-
     submit(form: NgForm) {
 
         if (form.invalid) {
 
-            this.toastr.error("The form has not been completed correctly.", "Error");
+            this.toastr.error("The form has not been completed correctly.");
             return;
 
         }
@@ -53,12 +42,8 @@ export class LoginComponent implements OnInit {
                 () => {
                     this.router.navigate(['/']);
                 },
-                err => {
-                    if (err.error && err.error.errorDescription)
-                        this.toastr.error(err.error.errorDescription, "Login Failed");
-                    else
-                        this.errorService.handleError(err, "User", "Login");
-                    this.toastr.error("Login failed", "Login");
+                (err: HttpErrorResponse) => {
+                    this.errorService.handleError(err, "User", "Login");
                 }
             );
 
