@@ -3,7 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
 import { AuthService } from './auth.service';
 import { LoginModel } from './auth.models';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ErrorService } from '../../common/services/error.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -15,15 +15,20 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class LoginComponent implements OnInit {
 
     public login: LoginModel = { username: undefined, password: undefined };
+    private params: Params;
 
     constructor(
         private toastr: ToastrService,
         private authService: AuthService,
         private router: Router,
-        private errorService: ErrorService
+        private errorService: ErrorService,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit() {
+        this.route.queryParams.subscribe(params => {
+            this.params = params;
+        });
     }
 
     submit(form: NgForm) {
@@ -35,12 +40,10 @@ export class LoginComponent implements OnInit {
 
         }
 
-        // todo: use ngForm
-        // todo: this needs to return a promise, and if success, THEN navigate, else route won't be allowed...
         this.authService.login(this.login)
             .subscribe(
                 () => {
-                    this.router.navigate(['/']);
+                    this.router.navigate([this.params.path ? decodeURI(this.params.path) : "/"]);
                 },
                 (err: HttpErrorResponse) => {
                     this.errorService.handleError(err, "User", "Login");
