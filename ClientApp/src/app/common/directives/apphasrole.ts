@@ -1,6 +1,7 @@
 import { Input, Directive, AfterViewInit, ViewContainerRef, TemplateRef } from "@angular/core";
 import { ProfileModel } from "../auth/auth.models";
 import { AuthService } from "../auth/auth.service";
+import { BehaviorSubject } from "rxjs";
 
 @Directive({
     selector: '[appHasRole]'
@@ -11,7 +12,7 @@ export class AppHasRoleDirective implements AfterViewInit {
     public role: string;
 
     @Input('appHasRoleProfile')
-    public profile: ProfileModel;
+    public profile: BehaviorSubject<ProfileModel>;
 
     constructor(
         private viewContainer: ViewContainerRef,
@@ -21,10 +22,16 @@ export class AppHasRoleDirective implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        if (this.role && this.profile && this.authService.isInRole(this.profile, this.role)) {
-            this.viewContainer.createEmbeddedView(this.templateRef);
-        } else {
-            this.viewContainer.clear();
-        }
+        this.profile.subscribe(
+            profile => {
+
+                if (this.role && this.profile && this.authService.isInRole(profile, this.role)) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                } else {
+                    this.viewContainer.clear();
+                }
+
+            }
+        );
     }
 }
