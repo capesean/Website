@@ -14,7 +14,6 @@ import { AppFileInputDirective } from './common/directives/appfileinput';
 import { AppHasRoleDirective } from './common/directives/apphasrole';
 import { UserSelectComponent } from './users/user.select.component';
 import { UserModalComponent } from './users/user.modal.component';
-import { BooleanPipe } from './common/pipes/booleanPipe';
 
 @NgModule({
     imports: [
@@ -31,7 +30,6 @@ import { BooleanPipe } from './common/pipes/booleanPipe';
         NavMenuComponent,
         MomentPipe,
         BooleanPipe,
-        BooleanPipe,
         AppFileInputDirective,
         AppHasRoleDirective,
         UserSelectComponent,
@@ -43,7 +41,6 @@ import { BooleanPipe } from './common/pipes/booleanPipe';
         NavMenuComponent,
         NgbModule,
         MomentPipe,
-        BooleanPipe,
         BooleanPipe,
         AppFileInputDirective,
         AppHasRoleDirective,
