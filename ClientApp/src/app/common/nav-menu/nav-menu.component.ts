@@ -4,6 +4,7 @@ import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 import { ProfileModel } from '../auth/auth.models';
 import { Roles } from '../models/roles.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-nav-menu',
@@ -13,7 +14,7 @@ import { Roles } from '../models/roles.model';
 export class NavMenuComponent implements OnInit {
 
     public isExpanded = false;
-    public profile: ProfileModel;
+    public profile$ = new BehaviorSubject<ProfileModel>(undefined);
     public isAdmin = false;
 
     constructor(
@@ -25,7 +26,7 @@ export class NavMenuComponent implements OnInit {
 
     ngOnInit(): void {
         this.authService.getProfile().subscribe(profile => {
-            this.profile = profile;
+            this.profile$.next(profile);
             this.isAdmin = this.authService.isInRole(profile, Roles.Administrator);
         });
     }

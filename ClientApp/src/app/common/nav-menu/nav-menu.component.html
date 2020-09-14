@@ -17,7 +17,7 @@
                        </div>
                    </li>
                    <li class="nav-item" ngbDropdown>
-                       <a class="nav-link" style="cursor: pointer" ngbDropdownToggle role="button" *ngIf="profile">
+                       <a class="nav-link" style="cursor: pointer" ngbDropdownToggle role="button" *ngIf="profile$ | async as profile">
                            <i class="fas fa-user fa-fw mr-2"></i>
                            <span class="hidden-xs visible-sm-inline-block visible-md-inline-block visible-lg-inline-block inline-block">
                                {{profile.firstName}}

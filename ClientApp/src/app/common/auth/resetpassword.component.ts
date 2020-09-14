@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
 import { AuthService } from './auth.service';
@@ -34,8 +34,6 @@ export class ResetPasswordComponent implements OnInit {
 
         }
 
-        // todo: use ngForm
-        // todo: this needs to return a promise, and if success, THEN navigate, else route won't be allowed...
         this.authService.resetPassword(this.resetPassword)
             .subscribe(
                 () => {
