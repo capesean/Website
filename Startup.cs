@@ -202,6 +202,9 @@ namespace WEB
             });
 
             services.AddSingleton<IEmailSender, EmailSender>();
+
+            // allows model state errors to be returned
+            services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
