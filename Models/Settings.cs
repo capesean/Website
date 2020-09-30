@@ -7,6 +7,8 @@
         public string SiteName { get; set; }
         public bool IsDevelopment { get; set; }
         public EmailSettings EmailSettings { get; set; }
+        public int AccessTokenExpiryMinutes { get; set; }
+        public int RefreshTokenExpiryMinutes { get; set; }
     }
 
     public class EmailSettings

@@ -122,8 +122,8 @@ namespace WEB
                     options.AllowPasswordFlow();
                     options.AllowRefreshTokenFlow();
                     // todo: in settings
-                    options.SetAccessTokenLifetime(TimeSpan.FromSeconds(60 * 10));
-                    options.SetRefreshTokenLifetime(TimeSpan.FromDays(7));
+                    options.SetAccessTokenLifetime(TimeSpan.FromMinutes(settings.AccessTokenExpiryMinutes));
+                    options.SetRefreshTokenLifetime(TimeSpan.FromMinutes(settings.RefreshTokenExpiryMinutes));
 
                     // Accept anonymous clients (i.e clients that don't send a client_id).
                     options.AcceptAnonymousClients();
