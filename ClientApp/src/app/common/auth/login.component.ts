@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { LoginModel } from './auth.models';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ErrorService } from '../../common/services/error.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';  
 
 @Component({
     selector: 'login',
@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
         this.authService.login(this.login)
             .subscribe(
                 () => {
-                    this.router.navigate([this.params.path ? decodeURI(this.params.path) : "/"]);
+                    this.router.navigate([this.params.path ? decodeURIComponent(this.params.path) : "/"]);
                 },
                 (err: HttpErrorResponse) => {
                     this.errorService.handleError(err, "User", "Login");
