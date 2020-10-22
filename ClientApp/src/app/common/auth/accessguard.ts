@@ -1,4 +1,4 @@
-import { CanActivateChild, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, Router } from '@angular/router';
+import { CanActivateChild, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, Router, Params } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
@@ -25,7 +25,7 @@ export class AccessGuard implements CanActivateChild, CanActivate {
     private checkParents(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
         //var requiresLogin: boolean = route.data.requiresLogin || false;
 
-        //// check up through parents for login requirements
+        //// check up through parents for login requirements  
         //var parent = route.parent;
         //while (parent && !requiresLogin) {
         //   requiresLogin = parent.data.requiresLogin || false;
@@ -41,8 +41,9 @@ export class AccessGuard implements CanActivateChild, CanActivate {
                     tap(loggedIn => {
                         if (!loggedIn) {
                             let url = state.url.startsWith("/auth") ? "" : state.url;
-                            url = "/auth/login" + (url ? "?path=" + encodeURIComponent(url) : "");
-                            this.router.navigate([url], {queryParamsHandling: "preserve"});
+                            const queryParams = {} as Params;
+                            if (url && url !== "/") queryParams.path = encodeURIComponent(url);
+                            this.router.navigate(["/auth/login"], { queryParamsHandling: "merge", queryParams: queryParams });
                         }
                     })
                 );
