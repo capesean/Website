@@ -35,11 +35,11 @@ namespace WEB.Models
             if (settings.IsDevelopment)
             {
                 // if not using migrations:
-                //Database.EnsureDeleted();
-                //Database.EnsureCreated();
-                //AddComputedColumns();
-                //AddNullableUniqueIndexes();
-                //await SeedAsync(um, rm, settings, options);
+                Database.EnsureDeleted();
+                Database.EnsureCreated();
+                AddComputedColumns();
+                AddNullableUniqueIndexes();
+                await SeedAsync(um, rm);//, settings, options);
 
                 // if using migrations:
                 //Database.EnsureCreated();
@@ -137,7 +137,7 @@ namespace WEB.Models
             //    AddUser(userManager, roleManager, "seanmatthewwalsh@gmail.com", "Sean", "Walsh", "P2ssw0rd!", allRoles);
 
             //    if (!context.Settings.Any())
-            //    {
+            //    { 
             //        var settings = new Settings();
             //        context.Entry(settings).State = EntityState.Added;
             //        context.SaveChanges();
