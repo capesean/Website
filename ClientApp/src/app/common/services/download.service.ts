@@ -12,10 +12,10 @@ export class DownloadService extends SearchQuery {
         super();
     }
 
-    testReport(): Observable<DownloadModel> {
+    testReport(): Observable<void> {
         return this.http.get<DownloadModel>(`${environment.baseApiUrl}downloads/test`, { responseType: 'blob' as 'json', observe: 'response' })
             .pipe(
-                map(response => this.convertResponse(response))
+                map(response => this.downloadFile(this.convertResponse(response)))
             );
     }
 

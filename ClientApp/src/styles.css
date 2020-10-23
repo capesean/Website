@@ -310,3 +310,7 @@ ngb-datepicker .is-valid, .was-validated ngb-datepicker :valid {
 input[type=file] {
     padding: 2px;
 }
+
+.navbar-brand img {
+    max-height: 20px;
+}
