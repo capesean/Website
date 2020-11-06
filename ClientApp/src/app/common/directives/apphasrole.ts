@@ -1,10 +1,10 @@
-import { Input, Directive, AfterViewInit, ViewContainerRef, TemplateRef } from "@angular/core";
+import { Input, Directive, AfterViewInit, ViewContainerRef, TemplateRef, AfterContentInit, ChangeDetectorRef } from "@angular/core";
 import { AuthService } from "../auth/auth.service";
 
 @Directive({
     selector: '[appHasRole]'
 })
-export class AppHasRoleDirective implements AfterViewInit {
+export class AppHasRoleDirective implements AfterContentInit {
 
     @Input('appHasRole')
     public role: string;
@@ -12,11 +12,12 @@ export class AppHasRoleDirective implements AfterViewInit {
     constructor(
         private viewContainer: ViewContainerRef,
         private templateRef: TemplateRef<unknown>,
-        private authService: AuthService
+        private authService: AuthService,
+        private cd: ChangeDetectorRef
     ) {
     }
 
-    ngAfterViewInit(): void {
+    ngAfterContentInit(): void {
         this.authService.getProfile().subscribe(
             profile => {
 
@@ -25,7 +26,7 @@ export class AppHasRoleDirective implements AfterViewInit {
                 } else {
                     this.viewContainer.clear();
                 }
-
+                this.cd.detectChanges();
             }
         );
     }
