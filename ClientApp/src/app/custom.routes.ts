@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { ChangePasswordComponent } from './users/changepassword.component';
 import { ErrorComponent } from './common/error/error.component';
 import { ErrorsComponent } from './common/error/errors.component';
+import { SettingsComponent } from './settings/settings.component';
 
 export const CustomRoutes: Route[] = [
     {
@@ -21,6 +22,14 @@ export const CustomRoutes: Route[] = [
         component: ChangePasswordComponent,
         pathMatch: 'full',
         data: { breadcrumb: 'Change Password' },
+    },
+    {
+        path: 'settings',
+        canActivate: [AccessGuard],
+        canActivateChild: [AccessGuard],
+        component: SettingsComponent,
+        pathMatch: 'full',
+        data: { breadcrumb: 'Settings' },
     },
     {
         path: 'errors',

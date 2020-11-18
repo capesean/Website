@@ -13,17 +13,18 @@ namespace WEB.Models
     {
         public DbSet<Error> Errors { get; set; }
         public DbSet<ErrorException> Exceptions { get; set; }
-        //public DbSet<Settings> Settings { get; set; }
+        public DbSet<DbSettings> Settings { get; set; }
 
         public ApplicationDbContext()
         {
-            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            // disabling tracking entirely messes up openiddict's sign-in behaviour: https://github.com/openiddict/openiddict-core/issues/565
+            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             ChangeTracker.AutoDetectChangesEnabled = false;
         }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
-            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             ChangeTracker.AutoDetectChangesEnabled = false;
         }
 
@@ -37,11 +38,11 @@ namespace WEB.Models
             if (settings.IsDevelopment)
             {
                 // if not using migrations:
-                Database.EnsureDeleted();
-                Database.EnsureCreated();
-                AddComputedColumns();
-                AddNullableUniqueIndexes();
-                await SeedAsync(um, rm);//, settings, options);
+                //Database.EnsureDeleted();
+                //Database.EnsureCreated();
+                //AddComputedColumns();
+                //AddNullableUniqueIndexes();
+                //await SeedAsync(um, rm);//, settings, options);
 
                 // if using migrations:
                 //Database.EnsureCreated();
@@ -86,7 +87,7 @@ namespace WEB.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLazyLoadingProxies(false);
-
+            optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
 
@@ -117,36 +118,10 @@ namespace WEB.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            //AddComputedColumns();
-
             ConfigureModelBuilder(modelBuilder);
 
             modelBuilder.Entity<User>(o => o.HasMany(u => u.Roles).WithOne().HasForeignKey(ur => ur.UserId).IsRequired());
-
-            //using (var roleStore = new RoleStore<AppRole, Guid, AppUserRole>(context))
-            //using (var roleManager = new RoleManager<AppRole, Guid>(roleStore))
-            //using (var userManager = new AppUserManager(new AppUserStore(context)))
-            //{
-            //    var allRoles = Enum.GetNames(typeof(Roles)).ToList();
-            //    foreach (var role in allRoles)
-            //    {
-            //        if (!roleManager.RoleExists(role.ToLower()))
-            //        {
-            //            roleManager.Create(new AppRole() { Name = role, Id = Guid.NewGuid() });
-            //        }
-            //    }
-
-            //    AddUser(userManager, roleManager, "seanmatthewwalsh@gmail.com", "Sean", "Walsh", "P2ssw0rd!", allRoles);
-
-            //    if (!context.Settings.Any())
-            //    { 
-            //        var settings = new Settings();
-            //        context.Entry(settings).State = EntityState.Added;
-            //        context.SaveChanges();
-            //    }
-            //}
-
-            // add custom indices here with fluent api
+            modelBuilder.Entity<DbSettings>(o => o.ToTable("Settings"));
 
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {

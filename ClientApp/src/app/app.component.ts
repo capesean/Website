@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { AuthStateModel } from './common/auth/auth.models';
 import { AuthService } from './common/auth/auth.service';
 import { Title } from '@angular/platform-browser';
-import { environment } from '../environments/environment';
 import * as moment from 'moment';
+import { environment } from '../environments/environment';
 
 @Component({
     selector: 'app-root',

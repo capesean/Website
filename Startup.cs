@@ -23,8 +23,8 @@ namespace WEB
     {
         public IConfiguration Configuration { get; }
         private IWebHostEnvironment Environment { get; }
-        private Settings settings { get; set; }
-        private DbContextOptions options { get; set; }
+        private Settings Settings { get; set; }
+        private DbContextOptions Options { get; set; }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
@@ -42,7 +42,7 @@ namespace WEB
             settings.RootPath = Environment.ContentRootPath + (Environment.ContentRootPath.EndsWith(@"\") ? "" : @"\");
             settings.IsDevelopment = Environment.IsDevelopment();
             services.AddSingleton(settings);
-            this.settings = settings;
+            Settings = settings;
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -57,7 +57,7 @@ namespace WEB
                 services.AddSingleton(options.Options);
 
                 // store for seeding
-                this.options = options.Options;
+                this.Options = options.Options;
             });
 
             services.AddSpaStaticFiles(configuration =>
@@ -216,7 +216,7 @@ namespace WEB
             using (var um = scope.ServiceProvider.GetService<UserManager<User>>())
             using (var rm = scope.ServiceProvider.GetService<RoleManager<AppRole>>())
             {
-                db.InitAsync(um, rm, settings, this.options).Wait();
+                db.InitAsync(um, rm, Settings, this.Options).Wait();
             }
 
             app.Use(async (context, next) =>

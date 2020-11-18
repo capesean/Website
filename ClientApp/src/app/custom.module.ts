@@ -10,9 +10,10 @@ import { ChangePasswordComponent } from './users/changepassword.component';
 import { CustomRoutes } from './custom.routes';
 import { ErrorComponent } from './common/error/error.component';
 import { ErrorsComponent } from './common/error/errors.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
-   declarations: [HomeComponent, ChangePasswordComponent, ErrorsComponent, ErrorComponent],
+   declarations: [HomeComponent, ChangePasswordComponent, ErrorsComponent, ErrorComponent, SettingsComponent],
    imports: [
       CommonModule,
       FormsModule,

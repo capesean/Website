@@ -1,4 +1,6 @@
-﻿namespace WEB.Models
+﻿using System.Linq;
+
+namespace WEB.Models
 {
     public class Settings
     {
@@ -9,6 +11,11 @@
         public EmailSettings EmailSettings { get; set; }
         public int AccessTokenExpiryMinutes { get; set; }
         public int RefreshTokenExpiryMinutes { get; set; }
+
+        public DbSettings GetDbSettings(ApplicationDbContext db)
+        {
+            return db.Settings.Single();
+        }
     }
 
     public class EmailSettings
@@ -21,4 +28,5 @@
         public bool SendEmails { get; set; }
         public bool SendErrorEmails { get; set; }
     }
+
 }

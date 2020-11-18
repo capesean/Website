@@ -26,10 +26,12 @@ namespace WEB.Reports.PDF
         private TwoColumnHeaderFooter pageEvent;
         private string imagesFolder;
         protected const string PDFContentType = "application/pdf";
+        private Settings settings;
 
         protected PDFReports(ApplicationDbContext dbContext, Settings settings)
         {
             db = dbContext;
+            this.settings = settings;
             this.imagesFolder = settings.RootPath + "wwwroot/images/";
             //var baseFontPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fonts", "GOTHIC.TTF");
             //_bf = BaseFont.CreateFont(baseFontPath, BaseFont.CP1252, BaseFont.EMBEDDED);
