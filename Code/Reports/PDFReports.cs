@@ -26,7 +26,7 @@ namespace WEB.Reports.PDF
         private TwoColumnHeaderFooter pageEvent;
         private string imagesFolder;
         protected const string PDFContentType = "application/pdf";
-        private Settings settings;
+        protected Settings settings;
 
         protected PDFReports(ApplicationDbContext dbContext, Settings settings)
         {
