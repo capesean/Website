@@ -39,6 +39,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201124093726_settings.cs" />
+    <Compile Remove="Migrations\20201124093726_settings.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="ClientApp\src\app\app.server.module.ts" />
     <None Remove="ClientApp\src\app\common\pipes\booleanPipe.ts" />
     <None Remove="ClientApp\src\app\common\pipes\momentPipe.ts" />
@@ -52,6 +57,10 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\common\pipes\booleanPipe.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\common\pipes\momentPipe.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

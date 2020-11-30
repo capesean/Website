@@ -105,6 +105,15 @@ fieldset[disabled] .app-select .input-group input.form-control {
     display: block;
 }
 
+.was-validated .custom-file .ng-invalid.form-control + label {
+    color: blue;
+}
+
+    .was-validated .custom-file .ng-invalid.form-control + label::after {
+        background-color: #dc3545;
+        color: white;
+    }
+
 /*need smaller margins in modal else scrollbar shows*/
 .modal-body .row {
     margin-right: -14px;
@@ -309,6 +318,12 @@ ngb-datepicker .is-valid, .was-validated ngb-datepicker :valid {
 
 input[type=file] {
     padding: 2px;
+    overflow-x: hidden;
+}
+
+.custom-file-label {
+    overflow-x: hidden;
+    white-space: nowrap;
 }
 
 .navbar-brand img {
