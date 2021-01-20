@@ -10,18 +10,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
-using OpenIddict.Server;
-using OpenIddict.Validation;
 using WEB;
 using WEB.Controllers;
 using WEB.Models;
-using WEB.Models.Authorization;
 using OpenIddict.Server.AspNetCore;
 using Microsoft.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
+using OpenIddict.Validation.AspNetCore;
 
 namespace AuthorizationServer.Controllers
 {
@@ -306,7 +303,7 @@ namespace AuthorizationServer.Controllers
             }
         }
 
-        [HttpPost("[Action]")]//, Authorize(AuthenticationSchemes = OpenIddictValidationDefaults.AuthenticationScheme)]
+        [HttpPost("[Action]"), Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
         {
             // todo: check if enabled? user.enabled - also in login, reset, BaseApiController, etc.
@@ -335,7 +332,7 @@ namespace AuthorizationServer.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var user = await db.Users.FirstOrDefaultAsync(o => o.UserName == resetPasswordDTO.UserName);
-            if (user == null) return NotFound();
+            if (user == null) return BadRequest("Invalid email");
 
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
 
@@ -363,7 +360,7 @@ namespace AuthorizationServer.Controllers
             if (resetDTO.NewPassword != resetDTO.ConfirmPassword) return BadRequest("Passwords do not match");
 
             var user = await db.Users.FirstOrDefaultAsync(o => o.UserName == resetDTO.UserName);
-            if (user == null) return NotFound(); // todo: should be BadRequest("Invalid email")?
+            if (user == null) return BadRequest("Invalid email");
 
             var result = await userManager.ResetPasswordAsync(user, resetDTO.Token, resetDTO.NewPassword);
 
