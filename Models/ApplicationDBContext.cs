@@ -38,11 +38,11 @@ namespace WEB.Models
             if (settings.IsDevelopment)
             {
                 // if not using migrations:
-                //Database.EnsureDeleted();
-                //Database.EnsureCreated();
-                //AddComputedColumns();
-                //AddNullableUniqueIndexes();
-                //await SeedAsync(um, rm);//, settings, options);
+                Database.EnsureDeleted();
+                Database.EnsureCreated();
+                AddComputedColumns();
+                AddNullableUniqueIndexes();
+                await SeedAsync(um, rm);//, settings, options);
 
                 // if using migrations:
                 //Database.EnsureCreated();

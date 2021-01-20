@@ -1,4 +1,3 @@
-using AspNet.Security.OpenIdConnect.Primitives;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenIddict.Abstractions;
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using WEB.Error;
 using WEB.Models;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace WEB
 {
@@ -47,7 +46,9 @@ namespace WEB
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 // Configure the context to use Microsoft SQL Server.
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sqlOptions => sqlOptions.CommandTimeout(300));
+
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
@@ -75,9 +76,9 @@ namespace WEB
             // which saves you from doing the mapping in your authorization controller.
             services.Configure<IdentityOptions>(options =>
             {
-                options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
-                options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
-                options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+                options.ClaimsIdentity.UserNameClaimType = Claims.Name;
+                options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
+                options.ClaimsIdentity.RoleClaimType = Claims.Role;
 
                 if (Environment.IsDevelopment())
                 {
@@ -113,78 +114,85 @@ namespace WEB
                 // Register the OpenIddict server handler.
                 .AddServer(options =>
                 {
-                    // Enable the token endpoint.
-                    options.EnableTokenEndpoint("/connect/token");
+                    options.SetLogoutEndpointUris("/connect/logout")
+                           .SetTokenEndpointUris("/connect/token");
 
-                    // todo: this should be called on logout
-                    options.EnableLogoutEndpoint("/connect/logout");
+                    // Enable the flows
+                    options.AllowPasswordFlow()
+                            .AllowRefreshTokenFlow();
 
-                    // Enable the password flow.
-                    options.AllowPasswordFlow();
-                    options.AllowRefreshTokenFlow();
-                    // todo: in settings
+                    options.RegisterScopes(Scopes.Profile, Scopes.Roles);
+
                     options.SetAccessTokenLifetime(TimeSpan.FromMinutes(settings.AccessTokenExpiryMinutes));
                     options.SetRefreshTokenLifetime(TimeSpan.FromMinutes(settings.RefreshTokenExpiryMinutes));
 
-                    // Accept anonymous clients (i.e clients that don't send a client_id).
+                    // Register the signing and encryption credentials.
+                    if (settings.IsDevelopment && false)
+                    {
+                        options.AddDevelopmentEncryptionCertificate()
+                               .AddDevelopmentSigningCertificate();
+                    }
+                    else
+                    {
+                        var certificate = Certificate.GetCertificate(settings);
+                        options.AddEncryptionCertificate(certificate);
+                        options.AddSigningCertificate(certificate);
+                    }
+
+                    // Force client applications to use Proof Key for Code Exchange (PKCE).
+                    options.RequireProofKeyForCodeExchange();
+
+                    options.UseAspNetCore()
+                        .EnableTokenEndpointPassthrough()
+                        //.DisableTransportSecurityRequirement()
+                        ;
+
+                    // Note: if you don't want to specify a client_id when sending
+                    // a token or revocation request, uncomment the following line:
+                    //
                     options.AcceptAnonymousClients();
 
-                    // During development, you can disable the HTTPS requirement.
-                    if (Environment.IsDevelopment())
-                        options.DisableHttpsRequirement();
-
-                    options.RegisterScopes(
-                        //OpenIdConnectConstants.Scopes.Email,
-                        OpenIdConnectConstants.Scopes.Profile,
-                        OpenIddictConstants.Scopes.Roles
-                    );
-
-                    // Note: to use JWT access tokens instead of the default
-                    // encrypted format, the following lines are required:
+                    // Note: if you want to process authorization and token requests
+                    // that specify non-registered scopes, uncomment the following line:
                     //
-                    //options.UseJsonWebTokens();
-                    //options.AddEphemeralSigningKey();
+                    options.DisableScopeValidation();
+
+                    // Note: if you don't want to use permissions, you can disable
+                    // permission enforcement by uncommenting the following lines:
+                    //
+                    options.IgnoreEndpointPermissions()
+                           .IgnoreGrantTypePermissions()
+                           .IgnoreResponseTypePermissions()
+                           .IgnoreScopePermissions();
+
+                    // Note: when issuing access tokens used by third-party APIs
+                    // you don't own, you can disable access token encryption:
+                    //
+                    // options.DisableAccessTokenEncryption();
                 })
 
-                // Register the OpenIddict validation handler.
-                // Note: the OpenIddict validation handler is only compatible with the
-                // default token format or with reference tokens and cannot be used with
-                // JWT tokens. For JWT tokens, use the Microsoft JWT bearer handler.
-                .AddValidation();
+                // Register the OpenIddict validation components.
+                .AddValidation(options =>
+                {
+                    // Configure the audience accepted by this resource server.
+                    // The value MUST match the audience associated with the
+                    // "demo_api" scope, which is used by ResourceController.
+                    //options.AddAudiences("resource_server");
 
+                    // Import the configuration from the local OpenIddict server instance.
+                    options.UseLocalServer();
 
-            // If you prefer using JWT, don't forget to disable the automatic
-            // JWT -> WS-Federation claims mapping used by the JWT middleware:
-            //
-            // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            // JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
-            //
-            // services.AddAuthentication()
-            //     .AddJwtBearer(options =>
-            //     {
-            //         options.Authority = "http://localhost:58795/";
-            //         options.Audience = "resource_server";
-            //         options.RequireHttpsMetadata = false;
-            //         options.TokenValidationParameters = new TokenValidationParameters
-            //         {
-            //             NameClaimType = OpenIdConnectConstants.Claims.Subject,
-            //             RoleClaimType = OpenIdConnectConstants.Claims.Role
-            //         };
-            //     });
+                    // Register the ASP.NET Core host.
+                    options.UseAspNetCore();
 
-            // Alternatively, you can also use the introspection middleware.
-            // Using it is recommended if your resource server is in a
-            // different application/separated from the authorization server.
-            //
-            // services.AddAuthentication()
-            //     .AddOAuthIntrospection(options =>
-            //     {
-            //         options.Authority = new Uri("http://localhost:58795/");
-            //         options.Audiences.Add("resource_server");
-            //         options.ClientId = "resource_server";
-            //         options.ClientSecret = "875sqd4s5d748z78z7ds1ff8zz8814ff88ed8ea4z4zzd";
-            //         options.RequireHttpsMetadata = false;
-            //     });
+                    // For applications that need immediate access token or authorization
+                    // revocation, the database entry of the received tokens and their
+                    // associated authorizations can be validated for each API call.
+                    // Enabling these options may have a negative impact on performance.
+                    //
+                    // options.EnableAuthorizationEntryValidation();
+                    // options.EnableTokenEntryValidation();
+                });
 
             services.ConfigureApplicationCookie(config =>
             {
@@ -203,6 +211,11 @@ namespace WEB
             });
 
             services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddSingleton(Configuration);
+            if (!settings.IsDevelopment)
+            {
+                //services.AddApplicationInsightsTelemetry();
+            }
 
             // allows model state errors to be returned
             services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = true);
@@ -225,6 +238,7 @@ namespace WEB
                 await next();
             });
 
+            // todo: put this in settings?
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -241,7 +255,7 @@ namespace WEB
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseAuthorization(); //roles?
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

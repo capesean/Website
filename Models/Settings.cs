@@ -11,6 +11,7 @@ namespace WEB.Models
         public EmailSettings EmailSettings { get; set; }
         public int AccessTokenExpiryMinutes { get; set; }
         public int RefreshTokenExpiryMinutes { get; set; }
+        public string CertificatePassword { get; set; }
 
         public DbSettings GetDbSettings(ApplicationDbContext db)
         {
