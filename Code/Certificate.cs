@@ -20,7 +20,7 @@ namespace WEB
             }
             else
             {
-                return new X509Certificate2(certificatePath, settings.CertificatePassword, X509KeyStorageFlags.MachineKeySet);
+                return new X509Certificate2(certificatePath, settings.CertificatePassword, X509KeyStorageFlags.Exportable);
             }
         }
 
@@ -53,7 +53,15 @@ namespace WEB
                 var certificate = request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
                 certificate.FriendlyName = certificateName;
 
-                return new X509Certificate2(certificate.Export(X509ContentType.Pfx, password), password, X509KeyStorageFlags.Exportable);
+                var bytes = certificate.Export(X509ContentType.Pfx, password);
+
+                return new X509Certificate2(
+                    bytes,
+                    password,
+                    X509KeyStorageFlags.MachineKeySet |
+                    X509KeyStorageFlags.PersistKeySet |
+                    X509KeyStorageFlags.Exportable
+                    );
             }
         }
     }
