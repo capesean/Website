@@ -57,6 +57,8 @@ export class ErrorService extends SearchQuery {
                         return;
                     } else if (err.error.errorDescription) {
                         message = err.error.errorDescription;
+                    } else if (err.error.error_description) {
+                        message = err.error.error_description;
                     } else {
                         for (const key in err.error) {
                             if (err.error[key])
