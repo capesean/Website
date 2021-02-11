@@ -1,7 +1,7 @@
 import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { Observable, Subscription, BehaviorSubject, of, interval, throwError, ReplaySubject } from 'rxjs';
+import { Observable, Subscription, BehaviorSubject, of, interval, throwError } from 'rxjs';
 import { AuthStateModel, AuthTokenModel, JwtTokenModel, LoginModel, RefreshGrantModel, RegisterModel, ResetPasswordModel, ResetModel, ChangePasswordModel, ProfileModel } from './auth.models';
 import { filter, map, first, flatMap, catchError, tap, mergeMap } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
@@ -14,14 +14,13 @@ const jwt = new JwtHelperService();
 export class AuthService {
 
     private initalState: AuthStateModel = { jwtToken: null, tokens: null, authReady: false };
-    private authReady$ = new BehaviorSubject<boolean>(false);
     private state: BehaviorSubject<AuthStateModel>;
     private refreshSubscription$: Subscription;
 
-    state$: Observable<AuthStateModel>;
-    tokens$: Observable<AuthTokenModel>;
-    jwtToken$: Observable<JwtTokenModel>;
-    loggedIn$: Observable<boolean>;
+    public state$: Observable<AuthStateModel>;
+    public tokens$: Observable<AuthTokenModel>;
+    public jwtToken$: Observable<JwtTokenModel>;
+    public loggedIn$: Observable<boolean>;
 
     constructor(
         private http: HttpClient,
@@ -100,9 +99,15 @@ export class AuthService {
     refreshTokens(): Observable<AuthTokenModel> {
         return this.state
             .pipe(first())
-            .pipe(map(state => state.tokens))
+            /*
+             * OpenIddict 3 invalidates refresh tokens after being used, so the latest token might have been retrieved by another tab
+             * and stored in localStorage, so get it from there rather than from the state. Two calls at the same time will invalidate one,
+             * though - needs to be handled.
+            */
+            //.pipe(map(state => state.tokens))
+            .pipe(map(() => this.retrieveTokens()))
             .pipe(mergeMap(tokens => this.getTokens({ refresh_token: tokens.refresh_token }, 'refresh_token')
-                .pipe(catchError(error => {
+                .pipe(catchError(() => {
                     if (window.location.pathname !== "/auth/login") this.router.navigate(["/auth/login"]);
                     return throwError('Session Expired');
                 }))
@@ -111,7 +116,7 @@ export class AuthService {
 
     private storeToken(tokens: AuthTokenModel): void {
         const previousTokens = this.retrieveTokens();
-        if (previousTokens != null && tokens.refresh_token == null) {
+        if (previousTokens && !tokens.refresh_token) {
             tokens.refresh_token = previousTokens.refresh_token;
         }
 
@@ -120,7 +125,7 @@ export class AuthService {
 
     private retrieveTokens(): AuthTokenModel {
         const tokensString = localStorage.getItem('auth-tokens');
-        const tokensModel: AuthTokenModel = tokensString == null ? null : JSON.parse(tokensString);
+        const tokensModel: AuthTokenModel = !tokensString ? null : JSON.parse(tokensString);
         return tokensModel;
     }
 
@@ -193,7 +198,7 @@ export class AuthService {
             .pipe(first())
             // refresh every half the total expiration time
             .pipe(flatMap(tokens => {
-                let i = interval(tokens.expires_in / 2 * 1000);
+                const i = interval(tokens.expires_in / 2 * 1000);
                 // todo: shouldn't go here, in it's own setCookie method?
                 //this.setCookie("tokens", JSON.stringify(tokens), 30);
                 return i;
