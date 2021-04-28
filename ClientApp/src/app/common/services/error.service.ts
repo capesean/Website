@@ -85,7 +85,7 @@ export class ErrorService extends SearchQuery {
         }
 
         console.log(err);
-        this.toastr.error(message, undefined, { timeOut: 0 });
+        this.toastr.error(message, undefined, { timeOut: 0, enableHtml: true });
 
     }
 
