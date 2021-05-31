@@ -12,6 +12,7 @@ namespace WEB.Models
         public int AccessTokenExpiryMinutes { get; set; }
         public int RefreshTokenExpiryMinutes { get; set; }
         public string CertificatePassword { get; set; }
+        public string ProxyToSpaDevelopmentServer { get; set; }
 
         public DbSettings GetDbSettings(ApplicationDbContext db)
         {

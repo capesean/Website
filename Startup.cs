@@ -269,7 +269,10 @@ namespace WEB
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
+                    if (!string.IsNullOrWhiteSpace(Settings.ProxyToSpaDevelopmentServer))
+                        spa.UseProxyToSpaDevelopmentServer(Settings.ProxyToSpaDevelopmentServer);
+                    else
+                        spa.UseAngularCliServer(npmScript: "start");
                 }
             });
         }
