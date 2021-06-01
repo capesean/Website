@@ -57,6 +57,11 @@ namespace WEB.Models
             }
 
             await DeleteErrors(-7);
+
+            // clean up some of the expired openiddict tokens/authorizations
+            await Database.ExecuteSqlRawAsync("delete from OpenIddictTokens where ExpirationDate < dateadd(month, -1, getdate())");
+            await Database.ExecuteSqlRawAsync("delete from OpenIddictAuthorizations where id not in (select authorizationid from OpenIddictTokens)");
+
         }
 
         private async Task DeleteErrors(int since)
