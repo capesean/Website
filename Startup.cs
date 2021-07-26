@@ -80,7 +80,7 @@ namespace WEB
                 options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
                 options.ClaimsIdentity.RoleClaimType = Claims.Role;
 
-                if (Environment.IsDevelopment())
+                if (Settings.IsDevelopment)
                 {
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
@@ -101,6 +101,7 @@ namespace WEB
                 options.User.RequireUniqueEmail = true;
             });
 
+            #region openiddict options
             services.AddOpenIddict()
 
                 // Register the OpenIddict core services.
@@ -127,7 +128,7 @@ namespace WEB
                     options.SetRefreshTokenLifetime(TimeSpan.FromMinutes(settings.RefreshTokenExpiryMinutes));
 
                     // Register the signing and encryption credentials.
-                    if (settings.IsDevelopment && false)
+                    if (settings.UseDevelopmentCertificate)
                     {
                         options.AddDevelopmentEncryptionCertificate()
                                .AddDevelopmentSigningCertificate();
@@ -144,22 +145,18 @@ namespace WEB
 
                     options.UseAspNetCore()
                         .EnableTokenEndpointPassthrough()
-                        //.DisableTransportSecurityRequirement()
                         ;
 
                     // Note: if you don't want to specify a client_id when sending
                     // a token or revocation request, uncomment the following line:
-                    //
                     options.AcceptAnonymousClients();
 
                     // Note: if you want to process authorization and token requests
                     // that specify non-registered scopes, uncomment the following line:
-                    //
                     options.DisableScopeValidation();
 
                     // Note: if you don't want to use permissions, you can disable
                     // permission enforcement by uncommenting the following lines:
-                    //
                     options.IgnoreEndpointPermissions()
                            .IgnoreGrantTypePermissions()
                            .IgnoreResponseTypePermissions()
@@ -167,7 +164,6 @@ namespace WEB
 
                     // Note: when issuing access tokens used by third-party APIs
                     // you don't own, you can disable access token encryption:
-                    //
                     // options.DisableAccessTokenEncryption();
                 })
 
@@ -193,6 +189,7 @@ namespace WEB
                     // options.EnableAuthorizationEntryValidation();
                     // options.EnableTokenEntryValidation();
                 });
+            #endregion
 
             services.ConfigureApplicationCookie(config =>
             {
@@ -212,8 +209,9 @@ namespace WEB
 
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton(Configuration);
-            if (!settings.IsDevelopment)
+            if (settings.UseApplicationInsidents)
             {
+                // requires the applicationinsights extension methods: 
                 //services.AddApplicationInsightsTelemetry();
             }
 
@@ -239,15 +237,23 @@ namespace WEB
             });
 
             // todo: put this in settings?
-            if (env.IsDevelopment())
+            if (Settings.IsDevelopment)
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            if (Settings.IsDevelopment)
+            {
+                app.UseSpaStaticFiles();
+            }
+            else
+            {
+                //app.UseHsts();
+            }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
-            if (!env.IsDevelopment())
+            if (Settings.UseSpaStaticFiles)
             {
                 app.UseSpaStaticFiles();
             }
@@ -267,13 +273,10 @@ namespace WEB
                 spa.Options.SourcePath = "ClientApp";
                 spa.Options.StartupTimeout = new TimeSpan(0, 5, 0);
 
-                if (env.IsDevelopment())
-                {
-                    if (!string.IsNullOrWhiteSpace(Settings.ProxyToSpaDevelopmentServer))
-                        spa.UseProxyToSpaDevelopmentServer(Settings.ProxyToSpaDevelopmentServer);
-                    else
-                        spa.UseAngularCliServer(npmScript: "start");
-                }
+                if (!string.IsNullOrWhiteSpace(Settings.ProxyToSpaDevelopmentServer))
+                    spa.UseProxyToSpaDevelopmentServer(Settings.ProxyToSpaDevelopmentServer);
+                else if (Settings.IsDevelopment)
+                    spa.UseAngularCliServer(npmScript: "start");
             });
         }
 

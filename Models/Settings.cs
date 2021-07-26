@@ -8,6 +8,9 @@ namespace WEB.Models
         public string RootPath { get; set; }
         public string SiteName { get; set; }
         public bool IsDevelopment { get; set; }
+        public bool UseDevelopmentCertificate { get; set; }
+        public bool UseApplicationInsights { get; set; }
+        public bool UseSpaStaticFiles { get; set; }
         public EmailSettings EmailSettings { get; set; }
         public int AccessTokenExpiryMinutes { get; set; }
         public int RefreshTokenExpiryMinutes { get; set; }
