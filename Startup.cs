@@ -209,7 +209,7 @@ namespace WEB
 
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton(Configuration);
-            if (settings.UseApplicationInsidents)
+            if (settings.UseApplicationInsights)
             {
                 // requires the applicationinsights extension methods: 
                 //services.AddApplicationInsightsTelemetry();
@@ -236,15 +236,9 @@ namespace WEB
                 await next();
             });
 
-            // todo: put this in settings?
             if (Settings.IsDevelopment)
             {
                 app.UseDeveloperExceptionPage();
-            }
-
-            if (Settings.IsDevelopment)
-            {
-                app.UseSpaStaticFiles();
             }
             else
             {
