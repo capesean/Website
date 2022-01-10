@@ -3,10 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-   production: false,
-   baseApiUrl: 'https://localhost:00000/api/',
-   baseAuthUrl: 'https://localhost:00000/',
-   siteName: 'SITENAME'
+    production: false,
+    baseApiUrl: `${window.location.origin}/api/`,
+    baseAuthUrl: `${window.location.origin}/`,
+    siteName: 'SITENAME'
 };
 
 /*
