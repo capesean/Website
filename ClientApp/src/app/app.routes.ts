@@ -18,7 +18,9 @@ export const AppRoutes: Route[] = [
             {
                 path: '',
                 loadChildren: () => import('./generated.module').then(m => m.GeneratedModule)
-            }
+            },
+            { path: '404', component: NotFoundComponent },
+            { path: '**', redirectTo: '/404' }
         ]
     }
 ];
