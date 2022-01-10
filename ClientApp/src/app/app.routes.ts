@@ -1,4 +1,5 @@
 import { Route, } from '@angular/router';
+import { NotFoundComponent } from './common/notfound.component';
 import { MainComponent } from './main.component';
 
 export const AppRoutes: Route[] = [
