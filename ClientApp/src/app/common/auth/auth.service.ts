@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, Subscription, BehaviorSubject, of, interval, throwError } from 'rxjs';
 import { AuthStateModel, AuthTokenModel, JwtTokenModel, LoginModel, RefreshGrantModel, RegisterModel, ResetPasswordModel, ResetModel, ChangePasswordModel, ProfileModel } from './auth.models';
-import { filter, map, first, flatMap, catchError, tap, mergeMap } from 'rxjs/operators';
+import { filter, map, first, flatMap, catchError, tap, mergeMap, share } from 'rxjs/operators';
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { Role } from '../models/roles.model';
 import { Router } from '@angular/router';
@@ -84,6 +84,7 @@ export class AuthService {
         }
         return this.http
             .get<ProfileModel>(`${environment.baseApiUrl}authorization/profile`)
+            .pipe(share())
             .pipe(tap(profile => {
                 this._profile = profile;
             }));
