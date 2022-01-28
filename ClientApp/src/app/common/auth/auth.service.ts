@@ -14,13 +14,13 @@ const jwt = new JwtHelperService();
 export class AuthService {
 
     private initalState: AuthStateModel = { jwtToken: null, tokens: null, authReady: false };
+    private profileGet: Observable<ProfileModel>;
     private state: BehaviorSubject<AuthStateModel>;
     private refreshSubscription$: Subscription;
-
-    public state$: Observable<AuthStateModel>;
-    public tokens$: Observable<AuthTokenModel>;
-    public jwtToken$: Observable<JwtTokenModel>;
-    public loggedIn$: Observable<boolean>;
+    state$: Observable<AuthStateModel>;
+    tokens$: Observable<AuthTokenModel>;
+    jwtToken$: Observable<JwtTokenModel>;
+    loggedIn$: Observable<boolean>;
 
     constructor(
         private http: HttpClient,
@@ -79,15 +79,22 @@ export class AuthService {
 
     protected _profile: ProfileModel;
     getProfile(refresh?: boolean): Observable<ProfileModel> {
+        // if the profile has already been retrieved, return it
         if (!refresh && this._profile) {
             return of(this._profile);
         }
-        return this.http
-            .get<ProfileModel>(`${environment.baseApiUrl}authorization/profile`)
-            .pipe(share())
-            .pipe(tap(profile => {
-                this._profile = profile;
-            }));
+        // if a request is currently outstanding, return that request
+        if (!this.profileGet) {
+            this.profileGet = this.http
+                .get<ProfileModel>(`${environment.baseApiUrl}authorization/profile`)
+                .pipe(share())
+                .pipe(tap(profile => {
+                    this._profile = profile;
+                    // clear the outstanding request
+                    this.profileGet = undefined;
+                }));
+        }
+        return this.profileGet;
     }
 
     isInRole(profile: ProfileModel, role: string | Role): boolean {
