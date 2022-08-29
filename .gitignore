@@ -340,8 +340,5 @@ ASALocalRun/
 healthchecksdb
 
 # ignore appsettings configuration files
-**/appsettings.development.json
 **/appsettings.staging.json
 **/appsettings.production.json
-**/ClientApp/src/environments/environment.prod.*
-**/ClientApp/src/environments/environment.*
